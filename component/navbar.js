@@ -1,5 +1,5 @@
 import Link from 'next/link' 
-import { Button,Nav,Navbar,NavDropdown,Form,FormControl } from 'react-bootstrap';
+import { Nav,Navbar } from 'react-bootstrap';
 
 const NavbarMenu = () =>(
     <div>
@@ -26,6 +26,7 @@ margin-right:15px;
     <Nav className="mr-auto">
       <Link className="navA" href="/"><a>Home</a></Link> 
       <Link className="navA" href="/chat"><a>Chat</a></Link> 
+      <Link className="navA" href="/admin"><a>Admin</a></Link> 
     </Nav>
   </Navbar.Collapse>
 </Navbar>

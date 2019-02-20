@@ -1,6 +1,7 @@
 import React from "react";
-
-import { Row,Col } from "react-bootstrap";
+import axios from "axios";
+import _ from "lodash";
+import { Button } from "react-bootstrap";
 
 import NavbarMenu from "../component/navbar";
 import Head from "next/head";
@@ -15,13 +16,16 @@ class Page extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      persons: []
+    };
 
   }
-
+  componentDidMount() {
+    console.log("componentDidMount");
+  }
 
   render() {
-    console.log(process.env.SOCKET_CLIENT);
-    
     return (
       <div>
         <Head>
@@ -46,22 +50,20 @@ class Page extends React.Component {
             src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
             crossorigin
           />
+
+          {/* <script>var Alert = ReactBootstrap.Alert;</script> */}
         </Head>
         <NavbarMenu />
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <Row>
-          <Col md={2}></Col>
-          <Col md={8}><img src="https://enterprise.zanroo.com/wp-content/themes/zanroo/images/logo.svg" alt="Zanroo" width={"100%"}/></Col>
-          <Col md={2}></Col>
-        </Row>
+        <p>{this.state.persons.data}</p>
+        <button onClick={()=>{
+            this.setState({ persons :{data:555}})
+            console.log(this.state.persons);
+        }}>
+        555
+        </button>
       </div>
     );
   }
- 
 }
 
 export default Page;

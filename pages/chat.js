@@ -3,8 +3,6 @@ import React, { Component } from 'react'
 
 import axios from "axios";
 import socketIOClient from 'socket.io-client';
-import "../style.css"
-import "../normalize.css"
 import {
   Row,
   Col
@@ -13,6 +11,9 @@ import Head from "next/head";
 import NavbarMenu from "../component/navbar";
 import Userlist from "../component/chat/user";
 import UserProfile from "../component/chat/userProfile";
+
+import "../style.css"
+import "../normalize.css"
 
 const io = socketIOClient('http://localhost:4000')
 
@@ -32,7 +33,7 @@ class ChatPage extends React.Component {
       persons: [],
       input: '',
       messages: [],
-      profile :{}
+      profile :{first_name:"",last_name:""}
     };
     this.chatdata = this.chatdata.bind(this)
   }
@@ -174,7 +175,7 @@ class ChatPage extends React.Component {
 
         </Head>
         <NavbarMenu />
-        <header class="header_chat">
+        <header className="header_chat">
           <div style={{paddingLeft:'85px',paddingRight:'85px'}}>
             <div className="left"><img src="static/img/logo.svg" /></div>
             <div className="middle">
