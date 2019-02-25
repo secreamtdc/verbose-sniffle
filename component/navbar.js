@@ -10,13 +10,12 @@ margin-right:15px;
 }`} 
 
 </style>
-<Navbar style={{backgroundColor:'#3b5998',paddingLeft:'85px'}}>
+<Navbar style={{backgroundColor:'#0E5383',paddingLeft:'85px'}}>
 
 <Navbar.Brand href="#home">
       <img
-        src="/static/logo.png"
-        width="30"
-        height="30"
+        src="/static/zanroo-logo.png"
+        height="25px"
         className="d-inline-block align-top"
         alt="React Bootstrap logo"
       />
@@ -30,6 +29,7 @@ margin-right:15px;
     </Nav>
   </Navbar.Collapse>
 </Navbar>
+
     </div>
 )
 

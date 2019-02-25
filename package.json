@@ -1,7 +1,6 @@
 {
   "name": "test-next",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "node server/index.js",
@@ -24,10 +23,24 @@
     "next": "^7.0.2",
     "react": "^16.7.0",
     "react-bootstrap": "^1.0.0-beta.5",
+    "react-bootstrap-table-next": "^2.1.2",
+    "react-bootstrap-table2-toolkit": "^1.2.2",
+    "react-dnd": "^7.0.2",
+    "react-dnd-html5-backend": "^7.0.2",
     "react-dom": "^16.7.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/secreamtdc/verbose-sniffle.git"
+  },
+  "bugs": {
+    "url": "https://github.com/secreamtdc/verbose-sniffle/issues"
+  },
+  "homepage": "https://github.com/secreamtdc/verbose-sniffle#readme",
+  "description": ""
 }

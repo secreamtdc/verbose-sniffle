@@ -1,19 +1,13 @@
 
-import React, { Component } from 'react'
+import React from 'react'
 
 import axios from "axios";
 import socketIOClient from 'socket.io-client';
-import {
-  Row,
-  Col
-} from "react-bootstrap";
-import Head from "next/head";
+
 import NavbarMenu from "../component/navbar";
 import Userlist from "../component/chat/user";
 import UserProfile from "../component/chat/userProfile";
 
-import "../style.css"
-import "../normalize.css"
 
 const io = socketIOClient('http://localhost:4000')
 
@@ -38,7 +32,7 @@ class ChatPage extends React.Component {
     this.chatdata = this.chatdata.bind(this)
   }
   componentDidMount() {
-    this.response()
+    // this.response()
     console.log("componentDidMount");
     this.scrollToBottom();
   }
@@ -150,30 +144,7 @@ class ChatPage extends React.Component {
 
     return (
       <div>
-        <Head>
-          <title>Facebook Chat API</title>
-          <link
-            rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-            integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-            crossorigin="anonymous"
-          />
-          <script
-            src="https://unpkg.com/react/umd/react.production.js"
-            crossorigin
-          />
-
-          <script
-            src="https://unpkg.com/react-dom/umd/react-dom.production.js"
-            crossorigin
-          />
-
-          <script
-            src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
-            crossorigin
-          />
-
-        </Head>
+ 
         <NavbarMenu />
         <header className="header_chat">
           <div style={{paddingLeft:'85px',paddingRight:'85px'}}>
