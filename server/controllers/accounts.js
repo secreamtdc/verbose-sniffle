@@ -22,7 +22,7 @@ function getUser(req, res) {
 
     const db = client.db(dbName);
 
-    const findUser = function (db, callback) {
+    const findUser =  function (db, callback) {
       // Get the documents collection
       const collection = db.collection("users");
       // Find some documents
@@ -31,8 +31,8 @@ function getUser(req, res) {
         [{ $match: { account_id: Number(req.params.account_id) } },
         { $lookup: { from: "group", localField: "group_id", foreignField: "_id", as: "group_docs" } },
         { $lookup: { from: "role", localField: "role_id", foreignField: "_id", as: "role_docs" } }]
-      ).toArray(function (err, docs) {
-        assert.equal(err, null);
+      ).toArray(async function (err, docs) {
+        await assert.equal(err, null);
         callback(docs);
       });
     };
@@ -44,7 +44,7 @@ function getUser(req, res) {
     });
   });
 }
-function getRole(req, res) {
+ function getRole(req, res) {
   // Use connect method to connect to the Server
   client.connect(function (err) {
     assert.equal(null, err);
@@ -52,12 +52,12 @@ function getRole(req, res) {
 
     const db = client.db(dbName);
 
-    const findRole = function (db, callback) {
+    const findRole =  function (db, callback) {
       // Get the documents collection
       const collection = db.collection("role");
       // Find some documents
-      collection.find({ "account_id": String(req.params.account_id) }).toArray(function (err, docs) {
-        assert.equal(err, null);
+     collection.find({ "account_id": String(req.params.account_id) }).toArray( async function (err, docs) {
+      await assert.equal(err, null);
         callback(docs);
       });
     };
@@ -75,12 +75,12 @@ function getGroup(req, res) {
 
     const db = client.db(dbName);
 
-    const findGroup = function (db, callback) {
+    const findGroup =  function (db, callback) {
       // Get the documents collection
       const collection = db.collection("group");
       // Find some documents
-      collection.find({ "account_id": Number(req.params.account_id) }).toArray(function (err, docs) {
-        assert.equal(err, null);
+      collection.find({ "account_id": Number(req.params.account_id) }).toArray(async function (err, docs) {
+        await assert.equal(err, null);
         callback(docs);
       });
     };

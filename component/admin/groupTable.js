@@ -29,7 +29,7 @@ export default props => {
           </ListGroup>
         </Col>
         <Col>
-          <Card border="success" style={{ width: "100%" }}>
+          <Card border="" style={{ width: "100%" }}>
 
             <Card.Header><b>{groupSelect != null ? groupSelect.name :groups[0].name}</b></Card.Header>
             <Card.Body>
