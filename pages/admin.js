@@ -31,9 +31,11 @@ class Page extends React.Component {
     this._changeGroup = this._changeGroup.bind(this);
 
   }
+
   componentDidUpdate() {
     console.log("componentDidUpdate");
   }
+
   componentDidMount() {
     console.log("componentDidMount");
 
@@ -43,24 +45,28 @@ class Page extends React.Component {
     this.getUser(account_id);
     this.getGroup(account_id);
   }
-  getUser = (account_id) => {
-    axios.get("/api/admin/accounts/" + account_id + "/users")
-      .then(res => {
-        this.setState({ accounts: res.data, accounts_const: res.data });
+  getUser = async (account_id) => {
+    try {
+      const resp = await axios.get("/api/admin/accounts/" + account_id + "/users")
+      this.setState({
+        accounts: resp.data,
+        accounts_const: resp.data
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+    } catch (error) {
+      console.log(error);
+
+    }
   }
   getGroup = (account_id) => {
     axios.get("/api/admin/accounts/" + account_id + "/groups")
       .then(res => {
-        this.setState({ groups: res.data, loading: false ,groupSelect:res.data[0] });
+        this.setState({ 
+          groups: res.data, 
+          loading: false, 
+          groupSelect: res.data[0] 
+        });
         console.log("groupSelect");
-        
         console.log(this.state.groupSelect);
-        
-
       })
       .catch(function (error) {
         console.log(error);
@@ -79,7 +85,7 @@ class Page extends React.Component {
   _changeRole(user_id, e) {
     const { account_id } = this.state
     let role_new_id = e.target.value
-    console.log(role_new_id+"_"+user_id)
+    console.log(role_new_id + "_" + user_id)
 
     axios.get("/api/admin/accounts/changerole/" + user_id + "/" + role_new_id)
       .then(res => {
@@ -89,8 +95,8 @@ class Page extends React.Component {
       .catch(function (error) {
         console.log(error);
       });
-   }
-  _changeGroup = (user,group_id) => {
+  }
+  _changeGroup = (user, group_id) => {
     const { account_id } = this.state
     this.setState({ "loading": true })
     axios.get("/api/admin/accounts/changegroup/" + user.id + "/" + group_id)
@@ -145,13 +151,39 @@ class Page extends React.Component {
   }
 
   render() {
-    const { loading, account_id, groups, accounts, roles, groupSelect } = this.state
+    const { 
+      loading,
+      account_id, 
+      groups, 
+      accounts, 
+      roles, 
+      groupSelect,
+      viewDetail 
+    } = this.state
 
     var viewDetailRender;
-    if (this.state.viewDetail) {
-      viewDetailRender = <AdminTable _changeRole={this._changeRole} _handleKeyUP={this._handleKeyUP} accounts={accounts} roles={roles} />;
+    if (viewDetail) {
+      viewDetailRender = (
+        <AdminTable
+          _changeRole={this._changeRole}
+          _handleKeyUP={this._handleKeyUP}
+          accounts={accounts}
+          roles={roles}
+        />
+      )
     } else {
-      viewDetailRender = <GroupTable groups={groups} _changeRole={this._changeRole} _handleKeyUP={this._handleKeyUP} accounts={accounts} roles={roles} groupSelect={groupSelect} selectGroup={this.selectGroup} handleDrop={this._changeGroup}/>;
+      viewDetailRender = (
+        <GroupTable 
+          groups={groups} 
+          _changeRole={this._changeRole} 
+          _handleKeyUP={this._handleKeyUP} 
+          accounts={accounts} 
+          roles={roles} 
+          groupSelect={groupSelect} 
+          selectGroup={this.selectGroup} 
+          handleDrop={this._changeGroup} 
+          />
+        )
     }
 
     return (
@@ -161,7 +193,12 @@ class Page extends React.Component {
 
           <Row>
             <Col>
-              <h1 style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+              <h1 
+                style={{ 
+                  paddingTop: "20px", 
+                  paddingBottom: "20px" 
+                  }}
+              >
                 Accounts <Badge variant="secondary">{account_id}</Badge>
               </h1>
             </Col>
@@ -170,7 +207,14 @@ class Page extends React.Component {
             </Col>
           </Row>
           {viewDetailRender}
-          {loading ? <div id="overlay"><div className='loading-spinner'></div></div>  : <div></div>}
+          {
+            loading && 
+              (
+                <div id="overlay">
+                  <div className='loading-spinner' />
+                </div>
+              )
+            }
         </Container>
       </div>
     );

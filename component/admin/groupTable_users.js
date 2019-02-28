@@ -11,10 +11,8 @@ import DragGroup from "./DragGroup"
 
 export default props => {
 
-const { _changeRole, _handleKeyUP, accounts, roles, groupSelect } = props;
-const groups = _.filter(accounts, ['group_id', groupSelect._id])
-
-console.log(groups)
+  const { _changeRole, _handleKeyUP, accounts, roles, groupSelect } = props;
+  const groups = _.filter(accounts, ['group_id', groupSelect._id])
 
   const MyExportCSV = (props) => {
     const handleClick = () => {
@@ -26,7 +24,6 @@ console.log(groups)
       </div>
     );
   };
-
 
   const columns = [{
     dataField: '_id',
@@ -66,7 +63,7 @@ console.log(groups)
       };
     }
   }, {
-    dataField: 'role_id',
+    dataField: '_id',
     text: 'Role',
     sort: true,
     csvExport: false,
@@ -96,7 +93,7 @@ console.log(groups)
         fontWeight: 'bold', cursor: 'pointer'
       };
     }
-  },{
+  }, {
     dataField: 'role_docs[0].name',
     text: 'Role',
     hidden: true
@@ -116,9 +113,9 @@ console.log(groups)
   };
 
   function _DragGroup(cell, row) {
-  
-    return(<div><DragGroup txt={cell} id={cell} key={cell} /></div>);
-    
+
+    return (<div><DragGroup txt={cell} id={cell} key={cell} /></div>);
+
   }
   function changePasswordFormatter(cell, row) {
 
@@ -133,22 +130,21 @@ console.log(groups)
     );
   }
   function changeRoleFormatter(cell, row) {
-
     let option = [];
     roles.forEach(element => {
       option.push(<option value={element._id}>{element.name}</option>)
     });
-    let dropdown = (<Form.Control disabled={row.is_removed}
-      defaultValue={row.role_id}
-      as="select"
-      onChange={(e) => { _changeRole(row._id, e); }}
-    >
-      {option}
-    </Form.Control>);
-    
+
     return (
-      dropdown
-    );
+      <Form.Control
+        disabled={row.is_removed}
+        defaultValue={row.role_id}
+        as="select"
+        onChange={(e) => { _changeRole(row._id, e); }}
+      >
+        {option}
+      </Form.Control>
+    )
   }
 
 
@@ -165,11 +161,12 @@ console.log(groups)
         {
           props => (
             <div>
-                
+
               {/* <MyExportCSV {...props.csvProps} />
               <input type="text" className="form-control " placeholder="Search" onKeyUp={(e) => { _handleKeyUP(e); }} />
               <hr /> */}
-              <BootstrapTable rowStyle={rowStyle}
+              <BootstrapTable
+                rowStyle={rowStyle}
                 {...props.baseProps}
               />
             </div>
