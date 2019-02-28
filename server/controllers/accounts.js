@@ -107,6 +107,23 @@ function changeRole(req, res) {
           });
         });
 }
+function changeGroup(req, res) {
+  // Use connect method to connect to the Server
+  client.connect(function (err, client) {
+    assert.equal(null, err);
+    const db = client.db(dbName);
+    const collection = db.collection("users");
+
+    var myquery = { '_id': new ObjectId(req.params.user_id) };
+    var document = { $set: { 'group_id': new ObjectId(req.params.group_id)}, $currentDate: { lastModified: true } };
+
+    //Query Chat
+    collection.updateOne(myquery,document, function (err, records) {
+      client.close();
+      res.json(records)
+    });
+  });
+}
 
 
 
@@ -117,6 +134,7 @@ module.exports = {
   getUser,
   getRole,
   getGroup,
-  changeRole
+  changeRole,
+  changeGroup
 
 };

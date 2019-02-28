@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -6,13 +6,15 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import _ from "lodash";
 
 import ChangePass from "./changepass"
-// import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import DragGroup from "./DragGroup"
+
 
 export default props => {
 
-const { _handleChangeRole, _handleKeyUP, accounts, roles, groupSelect } = props;
+const { _changeRole, _handleKeyUP, accounts, roles, groupSelect } = props;
 const groups = _.filter(accounts, ['group_id', groupSelect._id])
 
+console.log(groups)
 
   const MyExportCSV = (props) => {
     const handleClick = () => {
@@ -34,7 +36,8 @@ const groups = _.filter(accounts, ['group_id', groupSelect._id])
       return {
         fontWeight: 'bold', cursor: 'pointer'
       };
-    }
+    },
+    formatter: _DragGroup
   }, {
     dataField: 'name',
     text: 'Username',
@@ -112,9 +115,12 @@ const groups = _.filter(accounts, ['group_id', groupSelect._id])
     return style;
   };
 
-
+  function _DragGroup(cell, row) {
+  
+    return(<div><DragGroup txt={cell} id={cell} key={cell} /></div>);
+    
+  }
   function changePasswordFormatter(cell, row) {
-    console.log(row);
 
     return (
       <ChangePass row={row} />
@@ -125,21 +131,23 @@ const groups = _.filter(accounts, ['group_id', groupSelect._id])
     return (
       <Button disabled={row.is_removed} style={{ backgroundColor: '#0E5383' }} size="sm" block>Remote Login</Button>
     );
-
   }
   function changeRoleFormatter(cell, row) {
+
     let option = [];
     roles.forEach(element => {
       option.push(<option value={element._id}>{element.name}</option>)
     });
+    let dropdown = (<Form.Control disabled={row.is_removed}
+      defaultValue={row.role_id}
+      as="select"
+      onChange={(e) => { _changeRole(row._id, e); }}
+    >
+      {option}
+    </Form.Control>);
+    
     return (
-      <Form.Control disabled={row.is_removed}
-        defaultValue={row.role_id}
-        as="select"
-        onChange={(e) => { _handleChangeRole(row._id, e); }}
-      >
-        {option}
-      </Form.Control>
+      dropdown
     );
   }
 

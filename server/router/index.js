@@ -18,6 +18,7 @@ const router = express.Router()
   router.get('/api/admin/accounts/:account_id/roles',(accounts.getRole));
   router.get('/api/admin/accounts/:account_id/groups',(accounts.getGroup));
   router.get('/api/admin/accounts/changerole/:user_id/:role_id',(accounts.changeRole));
+  router.get('/api/admin/accounts/changegroup/:user_id/:group_id',(accounts.changeGroup));
   router.get('/ping', (req, res) => {
     res.send('pong');
   })

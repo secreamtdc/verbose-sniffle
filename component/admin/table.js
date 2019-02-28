@@ -7,7 +7,7 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
 export default props => {
 
-  const { _handleChangeRole, _handleKeyUP, accounts, roles } = props;
+  const { _changeRole, _handleKeyUP, accounts, roles } = props;
 
   const MyExportCSV = (props) => {
     const handleClick = () => {
@@ -131,7 +131,7 @@ export default props => {
       <Form.Control disabled={row.is_removed}
         defaultValue={row.role_id}
         as="select"
-        onChange={(e) => { _handleChangeRole(row._id, e); }}
+        onChange={(e) => { _changeRole(row._id, e); }}
       >
         {option}
       </Form.Control>

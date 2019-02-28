@@ -27,7 +27,9 @@ class Page extends React.Component {
       viewDetail: true, //เปลี่ยนหน้า
     };
 
-    this._handleChangeRole = this._handleChangeRole.bind(this);
+    this._changeRole = this._changeRole.bind(this);
+    this._changeGroup = this._changeGroup.bind(this);
+
   }
   componentDidUpdate() {
     console.log("componentDidUpdate");
@@ -53,7 +55,11 @@ class Page extends React.Component {
   getGroup = (account_id) => {
     axios.get("/api/admin/accounts/" + account_id + "/groups")
       .then(res => {
-        this.setState({ groups: res.data, loading: false });
+        this.setState({ groups: res.data, loading: false ,groupSelect:res.data[0] });
+        console.log("groupSelect");
+        
+        console.log(this.state.groupSelect);
+        
 
       })
       .catch(function (error) {
@@ -70,13 +76,27 @@ class Page extends React.Component {
       });
   }
 
-  async _handleChangeRole(user_id, e) {
-
+  _changeRole(user_id, e) {
+    const { account_id } = this.state
     let role_new_id = e.target.value
+    console.log(role_new_id+"_"+user_id)
+
     axios.get("/api/admin/accounts/changerole/" + user_id + "/" + role_new_id)
       .then(res => {
-        this.getUser(this.state.account_id);
+        this.getUser(account_id);
         alert('Update Role')
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+   }
+  _changeGroup = (user,group_id) => {
+    const { account_id } = this.state
+    this.setState({ "loading": true })
+    axios.get("/api/admin/accounts/changegroup/" + user.id + "/" + group_id)
+      .then(res => {
+        this.getUser(account_id);
+        this.setState({ "loading": false })
       })
       .catch(function (error) {
         console.log(error);
@@ -123,14 +143,15 @@ class Page extends React.Component {
       });
     }
   }
+
   render() {
     const { loading, account_id, groups, accounts, roles, groupSelect } = this.state
 
     var viewDetailRender;
     if (this.state.viewDetail) {
-      viewDetailRender = <AdminTable _handleChangeRole={this._handleChangeRole} _handleKeyUP={this._handleKeyUP} accounts={accounts} roles={roles} />;
+      viewDetailRender = <AdminTable _changeRole={this._changeRole} _handleKeyUP={this._handleKeyUP} accounts={accounts} roles={roles} />;
     } else {
-      viewDetailRender = <GroupTable groups={groups} _handleChangeRole={this._handleChangeRole} _handleKeyUP={this._handleKeyUP} accounts={accounts} roles={roles} groupSelect={groupSelect} selectGroup={this.selectGroup} />;
+      viewDetailRender = <GroupTable groups={groups} _changeRole={this._changeRole} _handleKeyUP={this._handleKeyUP} accounts={accounts} roles={roles} groupSelect={groupSelect} selectGroup={this.selectGroup} handleDrop={this._changeGroup}/>;
     }
 
     return (
@@ -148,8 +169,8 @@ class Page extends React.Component {
               <Button variant="warning" style={{ marginTop: "30px", marginBottom: "20px", float: 'right' }} onClick={this.viewDetailOpen} disabled={this.state.loading}>View</Button>
             </Col>
           </Row>
-
-          {loading ? <div className='loading-spinner'></div> : viewDetailRender}
+          {viewDetailRender}
+          {loading ? <div id="overlay"><div className='loading-spinner'></div></div>  : <div></div>}
         </Container>
       </div>
     );
