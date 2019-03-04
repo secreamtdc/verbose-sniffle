@@ -1,30 +1,25 @@
-import React from "react";
-import { Button, Form } from "react-bootstrap";
-import ChangePass from "./changepass";
-import BootstrapTable from "react-bootstrap-table-next";
-import ToolkitProvider from "react-bootstrap-table2-toolkit";
+import React, { Component } from 'react';
+import { Button, Form } from 'react-bootstrap';
+
+import BootstrapTable from 'react-bootstrap-table-next';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
+import _ from "lodash";
+
+import ChangePass from "./changepass"
+import DragGroup from "./DragGroup"
+
 
 export default props => {
-  const { _changeRole, searchInput, accounts, roles } = props;
+  const { _changeRole, searchInput, accounts, roles, groupSelect } = props;
+  const groups = _.filter(accounts, ['group_id', groupSelect._id])
 
-  const MyExportCSV = props => {
+  const MyExportCSV = (props) => {
     const handleClick = () => {
       props.onExport();
     };
     return (
       <div>
-        <button
-          className="btn"
-          style={{ backgroundColor: "#37BBA5" }}
-          onClick={handleClick}
-          style={{
-            marginBottom: "10px",
-            backgroundColor: "#37BBA5",
-            color: "white"
-          }}
-        >
-          Export to CSV
-        </button>
+        <button className="btn" style={{ backgroundColor: '#37BBA5' }} onClick={handleClick} style={{ marginBottom: '10px', backgroundColor: '#37BBA5', color: 'white' }}>Export to CSV</button>
       </div>
     );
   };
@@ -41,7 +36,8 @@ export default props => {
         };
       },
       headerClasses: "border-left-top",
-      headerFormatter: returnHeader
+      headerFormatter: returnHeader,
+      formatter:dragGroup
     },
     {
       dataField: "name",
@@ -57,7 +53,6 @@ export default props => {
     },
     {
       dataField: "email",
-      text: "Username",
       sort: true,
       headerStyle: (column, colIndex) => {
         return {
@@ -81,7 +76,7 @@ export default props => {
     {
       dataField: "_id",
       text: "Role",
-      // sort: true,
+      sort: true,
       csvExport: false,
       headerStyle: (column, colIndex) => {
         return {
@@ -126,15 +121,27 @@ export default props => {
   const rowStyle = (row, rowIndex) => {
     const style = {};
     if (row.is_removed) {
-      style.backgroundColor = "#e9e9e9";
-      style.cursor = "not-allowed";
-      style.userSelect = "none";
-      style.opacity = "0.7";
+      style.backgroundColor = '#e9e9e9';
+      style.cursor = 'not-allowed';
+      style.userSelect = 'none'
+      style.opacity = '0.7';
     }
 
     return style;
   };
 
+  function dragGroup(cell, row) {
+
+    return (<div><DragGroup txt={cell} id={cell} key={cell} /></div>);
+
+  }
+  function changePasswordFormatter(cell, row) {
+
+    return (
+      <ChangePass row={row} />
+    );
+
+  }
   function returnHeader(column, colIndex) {
     let word
     switch (colIndex) {
@@ -165,70 +172,48 @@ export default props => {
     }
     return word
   }
-  function changePasswordFormatter(cell, row) {
-    return <ChangePass row={row} />;
-  }
   function remoteFormatter(cell, row) {
     return (
-      <Button
-        disabled={row.is_removed}
-        style={{ backgroundColor: "#0E5383",fontSize:"14px" }}
-        size="sm"
-        block
-      >
-        Remote Login
-      </Button>
+      <Button disabled={row.is_removed} style={{ backgroundColor: '#0E5383' }} size="sm" block>Remote Login</Button>
     );
   }
   function changeRoleFormatter(cell, row) {
     let option = [];
     roles.forEach(element => {
-      option.push(<option value={element._id}>{element.name}</option>);
+      option.push(<option value={element._id}>{element.name}</option>)
     });
+
     return (
       <Form.Control
-      style={{maxWidth:'250px'}}
         disabled={row.is_removed}
         defaultValue={row.role_id}
         as="select"
-        onChange={e => {
-          _changeRole(row._id, e);
-        }}
+        onChange={(e) => { _changeRole(row._id, e); }}
       >
         {option}
       </Form.Control>
-    );
+    )
   }
-
   return (
     <div>
       <ToolkitProvider
         keyField="id"
-        data={accounts}
+        data={groups}
         columns={columns}
+
         // search
         exportCSV
       >
-        {props => (
-          <div>
-            <MyExportCSV {...props.csvProps} />
-            {/* <SearchBar {...props.searchProps} /> */}
-            <input
-              type="text"
-              className="form-control "
-              placeholder="Search"
-              onKeyUp={e => {
-                searchInput(e);
-              }}
-            />
-            <hr />
-            <BootstrapTable
-              rowStyle={rowStyle}
-              headerClasses="table"
-              {...props.baseProps}
-            />
-          </div>
-        )}
+        {
+          props => (
+            <div>
+              <BootstrapTable
+                rowStyle={rowStyle}
+                {...props.baseProps}
+              />
+            </div>
+          )
+        }
       </ToolkitProvider>
     </div>
   );

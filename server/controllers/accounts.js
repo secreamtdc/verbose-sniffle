@@ -3,10 +3,11 @@ const assert = require("assert");
 var rp = require("request-promise");
 var _ = require('lodash');
 var ObjectId = require('mongodb').ObjectID;
-const  { ABC_DEF} = require('../../constants/server')
+const  { MONGO_HOST} = require('../../constants/server')
+
 
 // Connection URL
-const url = "mongodb://localhost:27017";
+const url = MONGO_HOST;
 const dbName = "Central";
 
 const opts = {
@@ -16,9 +17,6 @@ const opts = {
 const client = new MongoClient(url, opts);
 
 function getUser(req, res) {
-
-  console.log('ABC_DEF', process.env.MONG0_TEST)
-
   // Use connect method to connect to the Server
   client.connect(function (err) {
     assert.equal(null, err);
@@ -102,7 +100,7 @@ function changeRole(req, res) {
           const collection = db.collection("users");
 
           var myquery = { '_id': new ObjectId(req.params.user_id) };
-          var document = { $set: { 'role_id': req.params.role_id}, $currentDate: { lastModified: true } };
+          var document = { $set: { 'role_id': new ObjectId(req.params.role_id)}, $currentDate: { lastModified: true } };
   
           //Query Chat
           collection.updateOne(myquery,document, function (err, records) {

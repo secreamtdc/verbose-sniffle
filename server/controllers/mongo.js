@@ -1,12 +1,12 @@
 const MongoClient = require("mongodb").MongoClient;
 const assert = require("assert");
-var rp = require("request-promise");
-var _ = require('lodash');
+const rp = require("request-promise");
+const _ = require('lodash');
 const request = require('request');
-
+const  { MONGO_HOST } = require('../../constants/server')
 
 // Connection URL
-const url = "mongodb://localhost:27017";
+const url = MONGO_HOST;
 const dbName = "ChatAPI";
 
 const opts = {

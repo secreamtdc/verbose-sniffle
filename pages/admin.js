@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import _ from "lodash";
-import { Container, Badge, Row, Col, Button } from "react-bootstrap";
-import HTML5Backend from 'react-dnd-html5-backend'
-import { DragDropContext } from 'react-dnd'
+import HTML5Backend from "react-dnd-html5-backend";
+import { DragDropContext } from "react-dnd";
+import {toastr} from 'react-redux-toastr'
 
-import NavbarMenu from "../component/navbar";
 import AdminTable from "../component/admin/table";
 import GroupTable from "../component/admin/groupTable";
+
+import View from "../component/admin/view/admin";
+
 
 class Page extends React.Component {
   static getInitialProps({ query }) {
@@ -17,19 +19,18 @@ class Page extends React.Component {
     super(props);
     this.state = {
       account_id: 10, //รอเปลี่ยนตาม account
-      accounts: [],  //list user ที่ใช้แสดง เปลี่ยนแปลงจาก filter
+      accounts: [], //list user ที่ใช้แสดง เปลี่ยนแปลงจาก filter
       accounts_const: [], //ดึง list ของ user มา
       roles: [],
       groups: [],
       loading: true,
       //ของอีกหน้า
       groupSelect: null, // กลุ่มที่เลือก
-      viewDetail: true, //เปลี่ยนหน้า
+      viewDetail: true //เปลี่ยนหน้า
     };
 
     this._changeRole = this._changeRole.bind(this);
     this._changeGroup = this._changeGroup.bind(this);
-
   }
 
   componentDidUpdate() {
@@ -39,183 +40,173 @@ class Page extends React.Component {
   componentDidMount() {
     console.log("componentDidMount");
 
-    const { account_id } = this.state
+    const { account_id } = this.state;
 
     this.getRole(account_id);
     this.getUser(account_id);
     this.getGroup(account_id);
   }
-  getUser = async (account_id) => {
+  getUser = async account_id => {
     try {
-      const resp = await axios.get("/api/admin/accounts/" + account_id + "/users")
+      const resp = await axios.get(
+        "/api/admin/accounts/" + account_id + "/users"
+      );
       this.setState({
         accounts: resp.data,
         accounts_const: resp.data
-      })
+      });
     } catch (error) {
       console.log(error);
-
+      toastr.error('ERROR', 'Something went wrong.')
     }
-  }
-  getGroup = (account_id) => {
-    axios.get("/api/admin/accounts/" + account_id + "/groups")
-      .then(res => {
-        this.setState({ 
-          groups: res.data, 
-          loading: false, 
-          groupSelect: res.data[0] 
-        });
-        console.log("groupSelect");
-        console.log(this.state.groupSelect);
-      })
-      .catch(function (error) {
-        console.log(error);
+  };
+  getGroup = async account_id => {
+    try {
+      const resp = await axios.get(
+        "/api/admin/accounts/" + account_id + "/groups"
+        );
+      this.setState({
+          groups: resp.data,
+          loading: false,
+          groupSelect: resp.data[0]
       });
-  }
-  getRole = (account_id) => {
-    axios.get("/api/admin/accounts/" + account_id + "/roles")
-      .then(res => {
-        this.setState({ roles: res.data });
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
+    } catch (error) {
+      console.log(error);
+      toastr.error('ERROR', 'Something went wrong.')
+    }
+  };
+  getRole = async account_id => {
+    try {
+      const resp = await axios.get(
+        "/api/admin/accounts/" + account_id + "/roles"
+        );
+        this.setState({ roles: resp.data });
+    } catch (error) {
+      console.log(error);
+      toastr.error('ERROR', 'Something went wrong.') 
+    }
+  };
 
-  _changeRole(user_id, e) {
-    const { account_id } = this.state
-    let role_new_id = e.target.value
-    console.log(role_new_id + "_" + user_id)
-
-    axios.get("/api/admin/accounts/changerole/" + user_id + "/" + role_new_id)
-      .then(res => {
-        this.getUser(account_id);
-        alert('Update Role')
-      })
-      .catch(function (error) {
+  _changeRole = async (user_id, e) => {
+    const { account_id } = this.state;
+    let role_new_id = e.target.value;
+      try {
+        const resp = await axios.get(
+          "/api/admin/accounts/changerole/" + user_id + "/" + role_new_id
+          );
+          
+          if(resp.data.ok == 1){
+            this.getUser(account_id);
+            toastr.success('Success', 'Update user role!')
+          }
+      } catch (error) {
         console.log(error);
-      });
+        toastr.error('ERROR', 'Something went wrong.') 
+      }
   }
-  _changeGroup = (user, group_id) => {
-    const { account_id } = this.state
-    this.setState({ "loading": true })
-    axios.get("/api/admin/accounts/changegroup/" + user.id + "/" + group_id)
-      .then(res => {
-        this.getUser(account_id);
-        this.setState({ "loading": false })
-      })
-      .catch(function (error) {
+  _changeGroup = async (user, group_id) => {
+    const { account_id } = this.state;
+      try {
+        const resp = await axios.get(
+          "/api/admin/accounts/changegroup/" + user.id + "/" + group_id
+          );
+          if(resp.data.ok == 1){
+            this.getUser(account_id);
+            toastr.success('Success', 'Update user group!')
+          }
+      } catch (error) {
         console.log(error);
-      });
-  }
+        toastr.error('ERROR', 'Something went wrong.') 
+      }
+  };
 
-  _handleKeyUP = (e) => {
-    const { accounts_const } = this.state
+  searchInput = e => {
+    
+    const { accounts_const } = this.state;
     let accounts = accounts_const;
-    let searchAccounts = _.filter(accounts, function (o) {
-
+    let searchAccounts = _.filter(accounts, function(o) {
+      console.log(accounts)
       o.group_name = o.group_docs[0].name;
       o.role_name = o.role_docs[0].name;
 
-      let data = _.pick(o, ['_id', 'name', 'email', 'group_name', 'role_name'])
+      let data = _.pick(o, ["_id", "name", "email", "group_name", "role_name"]);
       let text = _.toUpper(Object.values(data).join("|"));
       let search = _.toUpper(e.target.value);
+      console.log(text);
       let res = text.match(search);
       if (res != null) {
         return true;
       } else {
         return false;
       }
-    })
-    this.setState({ "accounts": searchAccounts })
-  }
-  selectGroup = (group_id) => {
-    const { groups } = this.state
-    let groupSelect = _.find(groups, ['_id', group_id])
-    this.setState({ "groupSelect": groupSelect })
-  }
+    });
+    this.setState({ accounts: searchAccounts });
+  };
+  selectGroup = group_id => {
+    const { groups } = this.state;
+    let groupSelect = _.find(groups, ["_id", group_id]);
+    this.setState({ groupSelect: groupSelect });
+  };
 
   //เปลี่ยนหน้า
   viewDetailOpen = () => {
-    const { viewDetail } = this.state
+    const { viewDetail } = this.state;
     if (viewDetail) {
       this.setState({
         viewDetail: false
       });
-    }
-    else {
+    } else {
       this.setState({
         viewDetail: true
       });
     }
-  }
+  };
 
   render() {
-    const { 
+    const {
       loading,
-      account_id, 
-      groups, 
-      accounts, 
-      roles, 
+      account_id,
+      groups,
+      accounts,
+      roles,
       groupSelect,
-      viewDetail 
-    } = this.state
+      viewDetail,
+      accounts_const
+    } = this.state;
 
     var viewDetailRender;
     if (viewDetail) {
       viewDetailRender = (
         <AdminTable
           _changeRole={this._changeRole}
-          _handleKeyUP={this._handleKeyUP}
+          searchInput={this.searchInput}
           accounts={accounts}
           roles={roles}
         />
-      )
+      );
     } else {
       viewDetailRender = (
-        <GroupTable 
-          groups={groups} 
-          _changeRole={this._changeRole} 
-          _handleKeyUP={this._handleKeyUP} 
-          accounts={accounts} 
-          roles={roles} 
-          groupSelect={groupSelect} 
-          selectGroup={this.selectGroup} 
-          handleDrop={this._changeGroup} 
-          />
-        )
+        <GroupTable
+          groups={groups}
+          _changeRole={this._changeRole}
+          searchInput={this.searchInput}
+          accounts={accounts_const}
+          roles={roles}
+          groupSelect={groupSelect}
+          selectGroup={this.selectGroup}
+          handleDrop={this._changeGroup}
+        />
+      );
     }
 
     return (
       <div>
-        <NavbarMenu />
-        <Container>
-
-          <Row>
-            <Col>
-              <h1 
-                style={{ 
-                  paddingTop: "20px", 
-                  paddingBottom: "20px" 
-                  }}
-              >
-                Accounts <Badge variant="secondary">{account_id}</Badge>
-              </h1>
-            </Col>
-            <Col>
-              <Button variant="warning" style={{ marginTop: "30px", marginBottom: "20px", float: 'right' }} onClick={this.viewDetailOpen} disabled={this.state.loading}>View</Button>
-            </Col>
-          </Row>
-          {viewDetailRender}
-          {
-            loading && 
-              (
-                <div id="overlay">
-                  <div className='loading-spinner' />
-                </div>
-              )
-            }
-        </Container>
+        <View
+          account_id={account_id}
+          viewDetailOpen={this.viewDetailOpen}
+          loading={loading}
+          viewDetailRender={viewDetailRender}
+        />
       </div>
     );
   }

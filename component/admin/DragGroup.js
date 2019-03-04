@@ -15,7 +15,7 @@ function collect(connect, monitor) {
     isDragging: monitor.isDragging()
   };
 }
-class Toy extends Component {
+class DragGroup extends Component {
   render() {
     const { isDragging, connectDragSource, txt } = this.props;
     return connectDragSource(
@@ -25,4 +25,4 @@ class Toy extends Component {
     )
   }
 }
-export default DragSource(Types.ITEM, itemSource, collect)(Toy);
+export default DragSource(Types.ITEM, itemSource, collect)(DragGroup);

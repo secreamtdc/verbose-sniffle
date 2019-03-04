@@ -24,7 +24,7 @@ class MyVerticallyCenteredModal extends React.Component {
     });
   }
   render() {
-    const { validated, password, repassword } = this.state;
+    const { validated } = this.state;
     return (
       <Modal
         {...this.props}
@@ -104,7 +104,8 @@ class App extends React.Component {
     return (
       <ButtonToolbar>
         <Button disabled={this.props.row.is_removed}
-          style={{ backgroundColor: '#0E5383' }} size="sm"
+          style={{ backgroundColor: "#0E5383",fontSize:"14px" }}
+          size="sm"
           onClick={() => this.setState({ modalShow: true })}
           block
         >

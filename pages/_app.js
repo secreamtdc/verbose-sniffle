@@ -3,7 +3,21 @@ import App, { Container } from 'next/app'
 import Head from 'next/head'
 
 import "../style.css"
-import "../normalize.css"
+// import "../normalize.css"
+import 'react-redux-toastr/lib/css/react-redux-toastr.min.css'
+
+import {Provider}  from 'react-redux'
+import ReduxToastr from 'react-redux-toastr'
+ 
+import {createStore, combineReducers} from 'redux'
+import {reducer as toastrReducer} from 'react-redux-toastr'
+const reducers = {
+  // ... other reducers ...
+  toastr: toastrReducer // <- Mounted at toastr.
+}
+const reducer = combineReducers(reducers)
+const store = createStore(reducer)
+
 class MyApp extends App {
   constructor(props) {
     super(props)
@@ -40,9 +54,25 @@ class MyApp extends App {
             src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js"
             crossorigin
           />
+
         </Head>
-        <Component {...pageProps} />
+        
+        <Provider store={store}>
+          <div>
+          <Component {...pageProps} />
+            <ReduxToastr
+                 timeOut={4000}
+                 newestOnTop={false}
+                 preventDuplicates
+                 position='bottom-right'
+                 transitionIn='fadeIn'
+                 transitionOut='fadeOut'
+                 progressBar
+                 y/>
+          </div>
+        </Provider>
       </Container>
+      
     )
   }
 }
