@@ -13,6 +13,7 @@ export default props => {
     selectGroup,
     handleDrop
   } = props;
+  
   const group_select = groupSelect != null ? groupSelect : groups[0];
   const countUsersGroupSelect = _.filter(accounts, ["group_id",
     group_select._id

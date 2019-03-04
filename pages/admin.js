@@ -1,20 +1,17 @@
 import React, { useState } from "react";
 import axios from "axios";
-import _ from "lodash";
+import { filter, pick, toUpper, find } from "lodash";
 import HTML5Backend from "react-dnd-html5-backend";
 import { DragDropContext } from "react-dnd";
-import {toastr} from 'react-redux-toastr'
+import { toastr } from 'react-redux-toastr'
 
 import AdminTable from "../component/admin/table";
 import GroupTable from "../component/admin/groupTable";
-
 import View from "../component/admin/view/admin";
 
+const API_ADMIN_ACCOUNT = "/api/admin/accounts"
 
 class Page extends React.Component {
-  static getInitialProps({ query }) {
-    return { query };
-  }
   constructor(props) {
     super(props);
     this.state = {
@@ -33,23 +30,17 @@ class Page extends React.Component {
     this._changeGroup = this._changeGroup.bind(this);
   }
 
-  componentDidUpdate() {
-    console.log("componentDidUpdate");
-  }
-
   componentDidMount() {
-    console.log("componentDidMount");
-
     const { account_id } = this.state;
-
     this.getRole(account_id);
     this.getUser(account_id);
     this.getGroup(account_id);
   }
-  getUser = async account_id => {
+
+  getUser = async (account_id) => {
     try {
       const resp = await axios.get(
-        "/api/admin/accounts/" + account_id + "/users"
+        `${API_ADMIN_ACCOUNT}/${account_id}/users`
       );
       this.setState({
         accounts: resp.data,
@@ -60,91 +51,96 @@ class Page extends React.Component {
       toastr.error('ERROR', 'Something went wrong.')
     }
   };
+
   getGroup = async account_id => {
     try {
       const resp = await axios.get(
-        "/api/admin/accounts/" + account_id + "/groups"
-        );
+        `${API_ADMIN_ACCOUNT}/${account_id}/groups`
+      );
       this.setState({
-          groups: resp.data,
-          loading: false,
-          groupSelect: resp.data[0]
+        groups: resp.data,
+        loading: false,
+        groupSelect: resp.data[0]
       });
     } catch (error) {
       console.log(error);
       toastr.error('ERROR', 'Something went wrong.')
     }
   };
+
   getRole = async account_id => {
     try {
       const resp = await axios.get(
-        "/api/admin/accounts/" + account_id + "/roles"
-        );
-        this.setState({ roles: resp.data });
+        `${API_ADMIN_ACCOUNT}/${account_id}/roles`
+      );
+      this.setState({ roles: resp.data });
     } catch (error) {
       console.log(error);
-      toastr.error('ERROR', 'Something went wrong.') 
+      toastr.error('ERROR', 'Something went wrong.')
     }
   };
 
   _changeRole = async (user_id, e) => {
     const { account_id } = this.state;
     let role_new_id = e.target.value;
-      try {
-        const resp = await axios.get(
-          "/api/admin/accounts/changerole/" + user_id + "/" + role_new_id
-          );
-          
-          if(resp.data.ok == 1){
-            this.getUser(account_id);
-            toastr.success('Success', 'Update user role!')
-          }
-      } catch (error) {
-        console.log(error);
-        toastr.error('ERROR', 'Something went wrong.') 
+    try {
+      const resp = await axios.get(
+        `${API_ADMIN_ACCOUNT}/changerole/${user_id}/${role_new_id}`
+      );
+
+      if (resp.data.ok == 1) {
+        this.getUser(account_id);
+        toastr.success('Success', 'Update user role!')
       }
+    } catch (error) {
+      console.log(error);
+      toastr.error('ERROR', 'Something went wrong.')
+    }
   }
+
   _changeGroup = async (user, group_id) => {
     const { account_id } = this.state;
-      try {
-        const resp = await axios.get(
-          "/api/admin/accounts/changegroup/" + user.id + "/" + group_id
-          );
-          if(resp.data.ok == 1){
-            this.getUser(account_id);
-            toastr.success('Success', 'Update user group!')
-          }
-      } catch (error) {
-        console.log(error);
-        toastr.error('ERROR', 'Something went wrong.') 
+    try {
+      const resp = await axios.get(
+        `${API_ADMIN_ACCOUNT}/changegroup/${user.id}/${group_id}`
+      );
+      if (resp.data.ok == 1) {
+        this.getUser(account_id);
+        toastr.success('Success', 'Update user group!')
       }
+    } catch (error) {
+      console.log(error);
+      toastr.error('ERROR', 'Something went wrong.')
+    }
   };
 
   searchInput = e => {
-    
+
     const { accounts_const } = this.state;
     let accounts = accounts_const;
-    let searchAccounts = _.filter(accounts, function(o) {
-      console.log(accounts)
+    let searchAccounts = filter(accounts, function (o) {
+      // console.log(accounts)
       o.group_name = o.group_docs[0].name;
       o.role_name = o.role_docs[0].name;
 
-      let data = _.pick(o, ["_id", "name", "email", "group_name", "role_name"]);
-      let text = _.toUpper(Object.values(data).join("|"));
-      let search = _.toUpper(e.target.value);
-      console.log(text);
+      let data = pick(o, ["_id", "name", "email", "group_name", "role_name"]);
+      let text = toUpper(Object.values(data).join("|"));
+      let search = toUpper(e.target.value);
+
+      // console.log(text);
       let res = text.match(search);
       if (res != null) {
         return true;
       } else {
         return false;
       }
-    });
+    })
     this.setState({ accounts: searchAccounts });
-  };
+  }
+
   selectGroup = group_id => {
     const { groups } = this.state;
-    let groupSelect = _.find(groups, ["_id", group_id]);
+    let groupSelect = find(groups, ["_id", group_id]);
     this.setState({ groupSelect: groupSelect });
   };
 
@@ -205,8 +201,9 @@ class Page extends React.Component {
           account_id={account_id}
           viewDetailOpen={this.viewDetailOpen}
           loading={loading}
-          viewDetailRender={viewDetailRender}
-        />
+        >
+          {viewDetailRender}
+        </View>
       </div>
     );
   }

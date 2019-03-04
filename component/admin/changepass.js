@@ -1,14 +1,16 @@
 import React from "react";
 import { Modal, ButtonToolbar, Button, Form, Row, Col } from 'react-bootstrap';
 
-
-
 class MyVerticallyCenteredModal extends React.Component {
-  constructor(...args) {
-    super(...args);
+  // constructor(...args) {
+  //   super(...args);
 
+  constructor(props) {
+    super(props)
+  
     this.state = { validated: false, password: "", repassword: "" };
   }
+
   handleSubmit(event) {
     const { password, repassword } = this.state;
     const form = event.currentTarget;
@@ -121,4 +123,5 @@ class App extends React.Component {
     );
   }
 }
+
 export default App;

@@ -200,8 +200,6 @@ export default props => {
         keyField="id"
         data={groups}
         columns={columns}
-
-        // search
         exportCSV
       >
         {
