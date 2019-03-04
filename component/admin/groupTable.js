@@ -32,7 +32,6 @@ export default props => {
       handleDrop={handleDrop}
       group_select={group_select}
       countUsersGroupSelect={countUsersGroupSelect}
-      
       />
   );
 };

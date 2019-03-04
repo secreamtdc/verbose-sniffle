@@ -23,7 +23,8 @@ class Page extends React.Component {
       loading: true,
       //ของอีกหน้า
       groupSelect: null, // กลุ่มที่เลือก
-      viewDetail: true //เปลี่ยนหน้า
+      viewDetail: true, //เปลี่ยนหน้า
+      copied: false
     };
 
     this._changeRole = this._changeRole.bind(this);
@@ -119,7 +120,6 @@ class Page extends React.Component {
     const { accounts_const } = this.state;
     let accounts = accounts_const;
     let searchAccounts = filter(accounts, function (o) {
-      // console.log(accounts)
       o.group_name = o.group_docs[0].name;
       o.role_name = o.role_docs[0].name;
 
@@ -127,7 +127,6 @@ class Page extends React.Component {
       let text = toUpper(Object.values(data).join("|"));
       let search = toUpper(e.target.value);
 
-      // console.log(text);
       let res = text.match(search);
       if (res != null) {
         return true;
@@ -144,6 +143,10 @@ class Page extends React.Component {
     this.setState({ groupSelect: groupSelect });
   };
 
+  newCopy = () => {
+    this.setState({copied: false});
+  };
+  
   //เปลี่ยนหน้า
   viewDetailOpen = () => {
     const { viewDetail } = this.state;
@@ -167,7 +170,9 @@ class Page extends React.Component {
       roles,
       groupSelect,
       viewDetail,
-      accounts_const
+      accounts_const,
+      copied
+
     } = this.state;
 
     var viewDetailRender;
@@ -178,6 +183,7 @@ class Page extends React.Component {
           searchInput={this.searchInput}
           accounts={accounts}
           roles={roles}
+          copied={copied}
         />
       );
     } else {

@@ -22,10 +22,11 @@
     "mongodb": "^3.1.13",
     "next": "^7.0.2",
     "prop-types": "^15.7.2",
-    "react": "^16.7.0",
+    "react": "^16.8.3",
     "react-bootstrap": "^1.0.0-beta.5",
     "react-bootstrap-table-next": "^2.1.2",
     "react-bootstrap-table2-toolkit": "^1.2.2",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dnd": "^7.0.2",
     "react-dnd-html5-backend": "^7.0.2",
     "react-dom": "^16.7.0",
@@ -36,7 +37,6 @@
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/secreamtdc/verbose-sniffle.git"

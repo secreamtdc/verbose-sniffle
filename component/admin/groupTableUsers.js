@@ -3,7 +3,7 @@ import { Button, Form } from 'react-bootstrap';
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-import _ from "lodash";
+// import _ from "lodash";
 
 import ChangePass from "./changepass"
 import DragGroup from "./DragGroup"

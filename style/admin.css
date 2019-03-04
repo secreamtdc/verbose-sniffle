@@ -1,0 +1,83 @@
+.sidebar.admin-sidebar {
+  padding-top: 0px; }
+  .sidebar.admin-sidebar .nav h3 {
+    margin-bottom: 40px;
+    margin-left: 15px; }
+  .sidebar.admin-sidebar .nav li.has-sub:hover {
+    background-color: transparent; }
+  .sidebar.admin-sidebar .nav li > a:hover,
+  .sidebar.admin-sidebar .nav li > a:focus {
+    background-color: rgba(0, 167, 201, 0.2); }
+
+.admin {
+  margin: 15px; }
+  .admin h3 {
+    color: #0e5383;
+    font-weight: bold; }
+  .admin .table thead tr th p {
+    font-size: 13px; }
+  .admin .table tbody tr td {
+    vertical-align: middle; }
+    .admin .table tbody tr td span {
+      font-size: 10px; }
+  .admin .table tbody {
+    border: 1px solid #ededed; }
+
+h3.headline {
+  color: #414042;
+  margin: 0;
+  margin-bottom: 30px;
+  font-weight: normal; }
+
+.select-menu {
+  text-align: right;
+  margin: 30px 15px; }
+  .select-menu button {
+    border-left: none;
+    border-right: none;
+    border-radius: 0; }
+  .select-menu button:first-child {
+    border-left: 1px solid;
+    border-radius: 3px 0 0 3px; }
+  .select-menu button:last-child {
+    border-right: 1px solid;
+    border-radius: 0 3px 3px 0; }
+
+.list-account h5 {
+  color: #939495;
+  margin-left: 20px; }
+
+.btn-options button {
+  margin-right: 10px; }
+
+.btn-options button:last-child {
+  margin-right: 0px; }
+
+.migrate {
+  width: 50%; }
+  .migrate form {
+    margin: 0 30px; }
+    .migrate form label {
+      font-size: 14px; }
+  .migrate .submit-btn {
+    text-align: right;
+    margin-right: 30px; }
+
+.add-btn {
+  text-align: right;
+  margin-bottom: 20px; }
+
+.permission .form-group {
+  margin-bottom: 0px; }
+
+.permission .table tbody tr td {
+  border-bottom: solid 1px #ebeff2; }
+  .permission .table tbody tr td a {
+    cursor: pointer; }
+
+.permission .tab-content {
+  padding: 0px;
+  margin-top: 15px; }
+
+.plan-setting .add-btn button {
+  margin-left: 10px; }

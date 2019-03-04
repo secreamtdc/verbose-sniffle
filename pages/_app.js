@@ -2,8 +2,14 @@ import React from 'react'
 import App, { Container } from 'next/app'
 import Head from 'next/head'
 
-import "../style.css"
-// import "../normalize.css"
+
+import "../style/style.css"
+
+import "../style/admin.css"
+import "../style/arun-style.css"
+import "../style/style-responsive.css"
+
+
 import 'react-redux-toastr/lib/css/react-redux-toastr.min.css'
 
 import {Provider}  from 'react-redux'
@@ -40,6 +46,7 @@ class MyApp extends App {
             integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
             crossorigin="anonymous"
           />
+          <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"></link>
           <script
             src="https://unpkg.com/react/umd/react.production.js"
             crossorigin

@@ -50,7 +50,6 @@ class ChatPage extends React.Component {
 
     //โหลดห้องแชท และข้อมูลผู้แชท
     axios.get("api/chatdata/" + roomid).then(res => {
-      console.log(res.data);
       
       this.setState({ messages: res.data, 'friendid': friendid, 'roomid': roomid })
 

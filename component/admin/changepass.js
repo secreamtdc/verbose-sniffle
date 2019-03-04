@@ -32,6 +32,7 @@ class MyVerticallyCenteredModal extends React.Component {
         {...this.props}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
+        style = {{opacity:1}}
         centered
       >
         <Form
@@ -42,7 +43,7 @@ class MyVerticallyCenteredModal extends React.Component {
         >
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
-              Modal heading
+              Change Password
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -85,7 +86,7 @@ class MyVerticallyCenteredModal extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button type="submit">Submit</Button>
-            <Button onClick={this.props.onHide} style={{ backgroundColor: '#37BBA5' }}>Close</Button>
+            <Button onClick={this.props.onHide}>Close</Button>
           </Modal.Footer>
         </Form>
       </Modal>
@@ -106,10 +107,10 @@ class App extends React.Component {
     return (
       <ButtonToolbar>
         <Button disabled={this.props.row.is_removed}
-          style={{ backgroundColor: "#0E5383",fontSize:"14px" }}
+          style={{ fontSize:"12px" ,fontWeight:"300",padding:"1px 5px"}}
+          variant="info"
           size="sm"
           onClick={() => this.setState({ modalShow: true })}
-          block
         >
           Change Password
           </Button>

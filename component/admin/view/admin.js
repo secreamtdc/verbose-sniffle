@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Badge, Row, Col, Button } from "react-bootstrap";
+import { Badge, Row, Col, Button } from "react-bootstrap";
 
 import NavbarMenu from "../../navbar";
 

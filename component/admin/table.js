@@ -1,18 +1,14 @@
 import React from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Dropdown } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 
 import ChangePass from "./changepass";
-import MyExportCSV from './ExportButton'
+import MyExportCSV from "./ExportButton";
+import IdOption from "./idoption";
 
 export default props => {
-  const {
-    _changeRole,
-    searchInput,
-    accounts,
-    roles
-  } = props;
+  const { _changeRole, searchInput, accounts, roles,copied} = props;
 
   const columns = [
     {
@@ -21,12 +17,12 @@ export default props => {
       sort: true,
       headerStyle: (column, colIndex) => {
         return {
-
           cursor: "pointer"
         };
       },
       headerClasses: "border-left-top",
-      headerFormatter: returnHeader
+      headerFormatter: returnHeader,
+      formatter: iconID
     },
     {
       dataField: "name",
@@ -34,7 +30,6 @@ export default props => {
       sort: true,
       headerStyle: (column, colIndex) => {
         return {
-
           cursor: "pointer"
         };
       },
@@ -46,7 +41,6 @@ export default props => {
       sort: true,
       headerStyle: (column, colIndex) => {
         return {
-
           cursor: "pointer"
         };
       },
@@ -116,68 +110,73 @@ export default props => {
       style.userSelect = "none";
       style.opacity = "0.7";
     }
-
     return style;
   };
 
-  const returnHeader = (column, colIndex) => {
-    let word
+  function returnHeader(column, colIndex) {
+    let word;
     switch (colIndex) {
       case 0:
-        word = <p>#</p>
+        word = <p>#</p>;
         break;
       case 1:
-        word = <p>Username</p>
+        word = <p>Username</p>;
         break;
       case 2:
-        word = <p>E-mail</p>
+        word = <p>E-mail</p>;
         break;
       case 3:
-        word = <p>Group</p>
+        word = <p>Group</p>;
         break;
       case 4:
-        word = <p>Role</p>
+        word = <p>Role</p>;
         break;
       case 5:
-        word = <p>Remote Login</p>
+        word = <p>Remote Login</p>;
         break;
       case 6:
-        word = <p>Change Password</p>
+        word = <p>Change Password</p>;
         break;
       default:
-        word = ""
+        word = "";
         break;
     }
-    return word
+    return word;
   }
-
   function changePasswordFormatter(cell, row) {
     return <ChangePass row={row} />;
+  }
+  function iconID(cell, row) {
+    return (
+      <div>
+        <IdOption _id={cell} copied={copied}/>
+      </div>
+    );
   }
 
   function remoteFormatter(cell, row) {
     return (
       <Button
-        disabled={row.is_removed}
-        style={{ backgroundColor: "#0E5383", fontSize: "14px" }}
+        style={{
+          backgroundColor: "#0E5383",
+          fontSize: "12px",
+          fontWeight: "300",
+          padding: "1px 5px"
+        }}
         size="sm"
-        block
       >
         Remote Login
       </Button>
     );
   }
-
   function changeRoleFormatter(cell, row) {
     let option = [];
-
     roles.forEach(element => {
       option.push(<option value={element._id}>{element.name}</option>);
     });
-
     return (
       <Form.Control
-        style={{ maxWidth: '250px' }}
+        style={{ maxWidth: "250px", fontSize: "12px" }}
         disabled={row.is_removed}
         defaultValue={row.role_id}
         as="select"
@@ -197,31 +196,29 @@ export default props => {
         data={accounts}
         columns={columns}
         exportCSV
-      // search        
+        // search
       >
-        {
-          props => {
-            return (
-              <div>
-                <MyExportCSV {...props.csvProps} />
-                <input
-                  type="text"
-                  className="form-control "
-                  placeholder="Search"
-                  onKeyUp={e => {
-                    searchInput(e);
-                  }}
-                />
-                <hr />
-                <BootstrapTable
-                  rowStyle={rowStyle}
-                  headerClasses="table"
-                  {...props.baseProps}
-                />
-              </div>
-            )
-          }
-        }
+        {props => {
+          return (
+            <div>
+              <MyExportCSV {...props.csvProps} />
+              <input
+                type="text"
+                className="form-control "
+                placeholder="Search"
+                onKeyUp={e => {
+                  searchInput(e);
+                }}
+              />
+              <hr />
+              <BootstrapTable
+                rowStyle={rowStyle}
+                headerClasses="table"
+                {...props.baseProps}
+              />
+            </div>
+          );
+        }}
       </ToolkitProvider>
     </div>
   );

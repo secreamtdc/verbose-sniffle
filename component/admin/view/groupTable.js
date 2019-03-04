@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Row, Col, ListGroup, Card, Badge } from "react-bootstrap";
-import { toastr } from "react-redux-toastr";
 import GroupTableUsers from "../groupTableUsers";
 import DropGroup from "../DropGroup";
 
@@ -10,7 +9,6 @@ export default props => {
     const {
         groups,
         _changeRole,
-        _changeGroup,
         searchInput,
         accounts,
         roles,
@@ -25,7 +23,6 @@ export default props => {
         <Col md="3">
           <ListGroup defaultActiveKey={"#" + groups[0]._id}>
             {groups.map((element, i) => {
-              console.log("Entered");
   
               let countUsers = _.filter(accounts, ["group_id", element._id])
                 .length;
@@ -68,7 +65,6 @@ export default props => {
               </b>{" "}
             </Card.Header>
             <Card.Body>
-              {/* <Card.Title>Success Card Title</Card.Title> */}
               <Card.Text>
                 <GroupTableUsers
                   _changeRole={_changeRole}
@@ -77,21 +73,6 @@ export default props => {
                   roles={roles}
                   groupSelect={groupSelect != null ? groupSelect : groups[0]}
                 />
-                <br />
-                <button
-                  className="btn"
-                  style={{
-                    backgroundColor: "#37BBA5",
-                    height: "35px",
-                    fontSize: "14px",
-                    fontWeight: "700",
-                    color: "white",
-                    float: "right"
-                  }}
-                  onClick={() => toastr.error("ERROR", "Something went wrong.")}
-                >
-                  + Add New User
-                </button>
               </Card.Text>
             </Card.Body>
           </Card>
