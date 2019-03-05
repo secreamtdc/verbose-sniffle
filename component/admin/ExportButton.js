@@ -12,10 +12,8 @@ const MyExportCSV = props => {
     <Button
       onClick={handleClick}
       style={{
-
         backgroundColor: "#37BBA5",
         borderColor: "#37BBA5"
-
       }}
     >
       Export CSV

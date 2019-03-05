@@ -14,13 +14,13 @@ export default props => {
     searchInput,
     accounts,
     roles,
-    is_drag = false,
+    is_groupview = false,
     groupSelect = null
   } = props;
 
-  const data = (is_drag)
+  const data = is_groupview
     ? filter(accounts, ["group_id", groupSelect._id])
-    : accounts;    
+    : accounts;
 
   const columns = [
     {
@@ -34,7 +34,7 @@ export default props => {
       },
       headerClasses: "border-left-top",
       formatter: iconID,
-      csvText: 'ID'      
+      csvText: "ID"
     },
     {
       dataField: "name",
@@ -45,7 +45,7 @@ export default props => {
           cursor: "pointer"
         };
       },
-      csvText: 'Username'    
+      csvText: "Username"
     },
     {
       dataField: "email",
@@ -56,7 +56,7 @@ export default props => {
           cursor: "pointer"
         };
       },
-      csvText: 'E-mail'
+      csvText: "E-mail"
     },
     {
       dataField: "group_docs[0].name",
@@ -67,7 +67,7 @@ export default props => {
           cursor: "pointer"
         };
       },
-      csvText: 'Group'
+      csvText: "Group"
     },
     {
       dataField: "_id",
@@ -91,7 +91,7 @@ export default props => {
     {
       dataField: "role_docs[0].name",
       hidden: true,
-      csvText: 'Role'
+      csvText: "Role"
     }
   ];
 
@@ -111,14 +111,8 @@ export default props => {
   }
   function iconID(cell, row) {
     let output;
-    if (props.is_drag) {
-      output = (
-        <DragGroup
-          txt={<IdOption _id={cell} />}
-          id={cell}
-          key={cell}
-        />
-      );
+    if (props.is_groupview) {
+      output = <DragGroup txt={<IdOption _id={cell} />} id={cell} key={cell} />;
     } else {
       output = <IdOption _id={cell} />;
     }
@@ -142,8 +136,8 @@ export default props => {
     );
   }
   function changeRoleFormatter(cell, row) {
-    console.log('changeRoleFormatter');
-    
+    console.log("changeRoleFormatter");
+
     let option = [];
     roles.forEach(element => {
       option.push(<option value={element._id}>{element.name}</option>);
@@ -168,7 +162,7 @@ export default props => {
       <div class="table-responsive">
         <ToolkitProvider keyField="id" data={data} columns={columns} exportCSV>
           {props => {
-            return (
+            const toolTable = (
               <div>
                 <InputGroup className="mb-3">
                   <InputGroup.Prepend>
@@ -183,6 +177,12 @@ export default props => {
                   />
                 </InputGroup>
                 <hr />
+              </div>
+            );
+
+            return (
+              <div>
+                {!is_groupview && toolTable}
                 <BootstrapTable
                   rowStyle={rowStyle}
                   headerClasses="table"

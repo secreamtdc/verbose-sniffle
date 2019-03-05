@@ -59,7 +59,7 @@ export default props => {
         <Col>
           <Card border="" style={{ width: "100%" }}>
             <Card.Header>
-              <b>
+              <b style={{fontSize:'16px'}}>
                 {group_select.name} : {countUsersGroupSelect} users
               </b>
             </Card.Header>
@@ -71,7 +71,7 @@ export default props => {
                   accounts={accounts}
                   roles={roles}
                   groupSelect={groupSelect != null ? groupSelect : groups[0]}
-                  is_drag = {true}
+                  is_groupview = {true}
                 />                
               </Card.Text>
             </Card.Body>
