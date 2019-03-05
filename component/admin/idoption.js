@@ -46,7 +46,6 @@ export default props => {
         <CopyToClipboard text={props.row._id}>
           <Dropdown.Item>
             <h3>
-              {" "}
               <i class="fas fa-font" /> Copy String
             </h3>
           </Dropdown.Item>
