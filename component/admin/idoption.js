@@ -27,15 +27,23 @@ export default props => {
   return (
     <Dropdown>
       <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-        <i
-          title={props._id}
-          class="fas fa-id-card-alt"
-          style={{ fontSize: "18px", cursor: "pointer", color: "#080808" }}
-        />
+        {!props.row.is_removed ? (
+          <i
+            title={props.row._id}
+            class="fas fa-id-card-alt"
+            style={{ fontSize: "18px", cursor: "pointer", color: "#080808" }}
+          />
+        ) : (
+          <i
+            title={props.row._id}
+            class="fas fa-user-slash"
+            style={{ fontSize: "18px", cursor: "pointer", color: "#ff8f8f" }}
+          />
+        )}
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <CopyToClipboard text={props._id}>
+        <CopyToClipboard text={props.row._id}>
           <Dropdown.Item>
             <h3>
               {" "}
@@ -43,7 +51,7 @@ export default props => {
             </h3>
           </Dropdown.Item>
         </CopyToClipboard>
-        <CopyToClipboard text={`ObjectId("${props._id}")`}>
+        <CopyToClipboard text={`ObjectId("${props.row._id}")`}>
           <Dropdown.Item>
             <h3>
               <i class="fas fa-copy" /> Copy ObjectID

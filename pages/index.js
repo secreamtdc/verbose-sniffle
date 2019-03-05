@@ -9,7 +9,7 @@ class Page extends React.Component {
     return { query };
   }
   constructor(props) {
-    super(props);
+    super(props);    
   }
 
 

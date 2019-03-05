@@ -21,7 +21,6 @@ class Page extends React.Component {
       roles: [],
       groups: [],
       loading: true,
-      //ของอีกหน้า
       groupSelect: null, // กลุ่มที่เลือก
       viewDetail: true, //เปลี่ยนหน้า
     };
@@ -146,9 +145,8 @@ class Page extends React.Component {
     this.setState({ groupSelect: groupSelect });
   };
 
-  //เปลี่ยนหน้า
+
   viewDetailOpen = () => {
-    
     const { viewDetail } = this.state;
     this.resetSearch();
     if (viewDetail) {

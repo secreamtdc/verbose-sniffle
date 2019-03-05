@@ -112,9 +112,9 @@ export default props => {
   function iconID(cell, row) {
     let output;
     if (props.is_groupview) {
-      output = <DragGroup txt={<IdOption _id={cell} />} id={cell} key={cell} />;
+      output = <DragGroup txt={<IdOption row={row} />} id={cell} key={cell} />;
     } else {
-      output = <IdOption _id={cell} />;
+      output = <IdOption row={row} />;
     }
     return <div>{output}</div>;
   }
