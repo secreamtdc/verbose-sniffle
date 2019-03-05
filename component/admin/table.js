@@ -1,19 +1,31 @@
 import React from "react";
-import { Button, Form, Dropdown } from "react-bootstrap";
+import { Button, Form, InputGroup, FormControl } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
-
+import { filter } from "lodash";
 import ChangePass from "./changepass";
 import MyExportCSV from "./ExportButton";
 import IdOption from "./idoption";
+import DragGroup from "./DragGroup";
 
 export default props => {
-  const { _changeRole, searchInput, accounts, roles,copied} = props;
+  const {
+    _changeRole,
+    searchInput,
+    accounts,
+    roles,
+    is_drag = false,
+    groupSelect = null
+  } = props;
+
+  const data = (is_drag)
+    ? filter(accounts, ["group_id", groupSelect._id])
+    : accounts;    
 
   const columns = [
     {
       dataField: "_id",
-      text: "#",
+      text: <p>#</p>,
       sort: true,
       headerStyle: (column, colIndex) => {
         return {
@@ -21,84 +33,65 @@ export default props => {
         };
       },
       headerClasses: "border-left-top",
-      headerFormatter: returnHeader,
-      formatter: iconID
+      formatter: iconID,
+      csvText: 'ID'      
     },
     {
       dataField: "name",
-      text: "Username",
+      text: <p>Username</p>,
       sort: true,
       headerStyle: (column, colIndex) => {
         return {
           cursor: "pointer"
         };
       },
-      headerFormatter: returnHeader
+      csvText: 'Username'    
     },
     {
       dataField: "email",
-      text: "Username",
+      text: <p>E-mail</p>,
       sort: true,
       headerStyle: (column, colIndex) => {
         return {
           cursor: "pointer"
         };
       },
-      headerFormatter: returnHeader
+      csvText: 'E-mail'
     },
     {
       dataField: "group_docs[0].name",
-      text: "group",
+      text: <p>Group</p>,
       sort: true,
       headerStyle: (column, colIndex) => {
         return {
           cursor: "pointer"
         };
       },
-      headerFormatter: returnHeader
+      csvText: 'Group'
     },
     {
       dataField: "_id",
-      text: "Role",
-      // sort: true,
+      text: <p>Role</p>,
       csvExport: false,
-      headerStyle: (column, colIndex) => {
-        return {
-          cursor: "pointer"
-        };
-      },
-      formatter: changeRoleFormatter,
-      headerFormatter: returnHeader
+      formatter: changeRoleFormatter
     },
     {
       dataField: "_id",
-      text: "Remote Login",
+      text: <p>Remote Login</p>,
       formatter: remoteFormatter,
-      csvExport: false,
-      headerStyle: (column, colIndex) => {
-        return {
-          cursor: "pointer"
-        };
-      },
-      headerFormatter: returnHeader
+      csvExport: false
     },
     {
       dataField: "_id",
-      text: "Change Password",
+      text: <p>Change Password</p>,
       formatter: changePasswordFormatter,
       csvExport: false,
-      headerStyle: (column, colIndex) => {
-        return {
-          cursor: "pointer"
-        };
-      },
-      headerClasses: "border-right-top",
-      headerFormatter: returnHeader
+      headerClasses: "border-right-top"
     },
     {
       dataField: "role_docs[0].name",
-      text: "Role",
-      hidden: true
+      hidden: true,
+      csvText: 'Role'
     }
   ];
 
@@ -113,50 +106,29 @@ export default props => {
     return style;
   };
 
-  function returnHeader(column, colIndex) {
-    let word;
-    switch (colIndex) {
-      case 0:
-        word = <p>#</p>;
-        break;
-      case 1:
-        word = <p>Username</p>;
-        break;
-      case 2:
-        word = <p>E-mail</p>;
-        break;
-      case 3:
-        word = <p>Group</p>;
-        break;
-      case 4:
-        word = <p>Role</p>;
-        break;
-      case 5:
-        word = <p>Remote Login</p>;
-        break;
-      case 6:
-        word = <p>Change Password</p>;
-        break;
-      default:
-        word = "";
-        break;
-    }
-    return word;
-  }
   function changePasswordFormatter(cell, row) {
     return <ChangePass row={row} />;
   }
   function iconID(cell, row) {
-    return (
-      <div>
-        <IdOption _id={cell} copied={copied}/>
-      </div>
-    );
+    let output;
+    if (props.is_drag) {
+      output = (
+        <DragGroup
+          txt={<IdOption _id={cell} />}
+          id={cell}
+          key={cell}
+        />
+      );
+    } else {
+      output = <IdOption _id={cell} />;
+    }
+    return <div>{output}</div>;
   }
 
   function remoteFormatter(cell, row) {
     return (
       <Button
+        disabled={row.is_removed}
         style={{
           backgroundColor: "#0E5383",
           fontSize: "12px",
@@ -170,6 +142,8 @@ export default props => {
     );
   }
   function changeRoleFormatter(cell, row) {
+    console.log('changeRoleFormatter');
+    
     let option = [];
     roles.forEach(element => {
       option.push(<option value={element._id}>{element.name}</option>);
@@ -191,35 +165,35 @@ export default props => {
 
   return (
     <div>
-      <ToolkitProvider
-        keyField="id"
-        data={accounts}
-        columns={columns}
-        exportCSV
-        // search
-      >
-        {props => {
-          return (
-            <div>
-              <MyExportCSV {...props.csvProps} />
-              <input
-                type="text"
-                className="form-control "
-                placeholder="Search"
-                onKeyUp={e => {
-                  searchInput(e);
-                }}
-              />
-              <hr />
-              <BootstrapTable
-                rowStyle={rowStyle}
-                headerClasses="table"
-                {...props.baseProps}
-              />
-            </div>
-          );
-        }}
-      </ToolkitProvider>
+      <div class="table-responsive">
+        <ToolkitProvider keyField="id" data={data} columns={columns} exportCSV>
+          {props => {
+            return (
+              <div>
+                <InputGroup className="mb-3">
+                  <InputGroup.Prepend>
+                    <MyExportCSV {...props.csvProps} />
+                  </InputGroup.Prepend>
+                  <FormControl
+                    aria-describedby="basic-addon1"
+                    placeholder="Search"
+                    onKeyUp={e => {
+                      searchInput(e);
+                    }}
+                  />
+                </InputGroup>
+                <hr />
+                <BootstrapTable
+                  rowStyle={rowStyle}
+                  headerClasses="table"
+                  {...props.baseProps}
+                  bordered={false}
+                />
+              </div>
+            );
+          }}
+        </ToolkitProvider>
+      </div>
     </div>
   );
 };

@@ -56,7 +56,7 @@ class MyVerticallyCenteredModal extends React.Component {
                 <Form.Control plaintext readOnly defaultValue={this.props.row.email} />
               </Col>
             </Form.Group>
-
+            <br/>
             <Form.Group as={Row} controlId="formPlaintextPassword">
               <Form.Label column sm="2">
                 Password
@@ -70,6 +70,7 @@ class MyVerticallyCenteredModal extends React.Component {
                 </Form.Control.Feedback>
               </Col>
             </Form.Group>
+            <br/>
             <Form.Group as={Row} controlId="formPlaintextPassword">
               <Form.Label column sm="2">
                 Re-Password

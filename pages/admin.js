@@ -24,7 +24,6 @@ class Page extends React.Component {
       //ของอีกหน้า
       groupSelect: null, // กลุ่มที่เลือก
       viewDetail: true, //เปลี่ยนหน้า
-      copied: false
     };
 
     this._changeRole = this._changeRole.bind(this);
@@ -34,8 +33,8 @@ class Page extends React.Component {
   componentDidMount() {
     const { account_id } = this.state;
     this.getRole(account_id);
-    this.getUser(account_id);
     this.getGroup(account_id);
+    this.getUser(account_id);
   }
 
   getUser = async (account_id) => {
@@ -123,7 +122,7 @@ class Page extends React.Component {
       o.group_name = o.group_docs[0].name;
       o.role_name = o.role_docs[0].name;
 
-      let data = pick(o, ["_id", "name", "email", "group_name", "role_name"]);
+      let data = pick(o, ["name", "email", "group_name", "role_name"]);
       let text = toUpper(Object.values(data).join("|"));
       let search = toUpper(e.target.value);
 
@@ -136,20 +135,22 @@ class Page extends React.Component {
     })
     this.setState({ accounts: searchAccounts });
   }
-
+  resetSearch = () => {
+    const { accounts_const } = this.state;
+    let accounts = accounts_const;
+    this.setState({ accounts: accounts });
+  }
   selectGroup = group_id => {
     const { groups } = this.state;
     let groupSelect = find(groups, ["_id", group_id]);
     this.setState({ groupSelect: groupSelect });
   };
 
-  newCopy = () => {
-    this.setState({copied: false});
-  };
-  
   //เปลี่ยนหน้า
   viewDetailOpen = () => {
+    
     const { viewDetail } = this.state;
+    this.resetSearch();
     if (viewDetail) {
       this.setState({
         viewDetail: false
@@ -169,9 +170,7 @@ class Page extends React.Component {
       accounts,
       roles,
       groupSelect,
-      viewDetail,
-      accounts_const,
-      copied
+      viewDetail
 
     } = this.state;
 
@@ -183,7 +182,6 @@ class Page extends React.Component {
           searchInput={this.searchInput}
           accounts={accounts}
           roles={roles}
-          copied={copied}
         />
       );
     } else {
@@ -192,7 +190,7 @@ class Page extends React.Component {
           groups={groups}
           _changeRole={this._changeRole}
           searchInput={this.searchInput}
-          accounts={accounts_const}
+          accounts={accounts}
           roles={roles}
           groupSelect={groupSelect}
           selectGroup={this.selectGroup}
@@ -205,6 +203,7 @@ class Page extends React.Component {
       <div>
         <View
           account_id={account_id}
+          viewDetail = {viewDetail}
           viewDetailOpen={this.viewDetailOpen}
           loading={loading}
         >

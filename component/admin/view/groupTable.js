@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Row, Col, ListGroup, Card, Badge } from "react-bootstrap";
-import GroupTableUsers from "../groupTableUsers";
+import AdminTable from "../table";
 import DropGroup from "../DropGroup";
 
 
@@ -28,7 +28,6 @@ export default props => {
                 .length;
               let eleGroup = (
                 <div>
-                  {" "}
                   {element.name}{" "}
                   <Badge pill variant="secondary">
                     {countUsers}
@@ -62,17 +61,18 @@ export default props => {
             <Card.Header>
               <b>
                 {group_select.name} : {countUsersGroupSelect} users
-              </b>{" "}
+              </b>
             </Card.Header>
             <Card.Body>
               <Card.Text>
-                <GroupTableUsers
+                <AdminTable
                   _changeRole={_changeRole}
                   searchInput={searchInput}
                   accounts={accounts}
                   roles={roles}
                   groupSelect={groupSelect != null ? groupSelect : groups[0]}
-                />
+                  is_drag = {true}
+                />                
               </Card.Text>
             </Card.Body>
           </Card>

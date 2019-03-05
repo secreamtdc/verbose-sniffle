@@ -6,6 +6,7 @@ import NavbarMenu from "../../navbar";
 export default props => {
   const {
     account_id,
+    viewDetail,
     viewDetailOpen,
     loading,
     children
@@ -37,7 +38,7 @@ export default props => {
               onClick={viewDetailOpen}
               disabled={loading}
             >
-              View
+              {viewDetail ? "Group View" : "List view"}
             </Button>
           </Col>
         </Row>
