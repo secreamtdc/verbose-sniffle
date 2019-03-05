@@ -3,7 +3,7 @@ import { Button, Form, InputGroup, FormControl } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import { filter } from "lodash";
-import ChangePass from "./changepass";
+import ChangePass from "./ChangePasswordBtn";
 import MyExportCSV from "./ExportButton";
 import IdOption from "./idoption";
 import DragGroup from "./DragGroup";

@@ -6,7 +6,7 @@ import { DragDropContext } from "react-dnd";
 import { toastr } from 'react-redux-toastr'
 
 import AdminTable from "../component/admin/table";
-import GroupTable from "../component/admin/groupTable";
+import GroupTable from "../component/admin/view/groupTable";
 import View from "../component/admin/view/admin";
 
 const API_ADMIN_ACCOUNT = "/api/admin/accounts"
@@ -125,8 +125,9 @@ class Page extends React.Component {
       let text = toUpper(Object.values(data).join("|"));
       let search = toUpper(e.target.value);
 
-      let res = text.match(search);
-      if (res != null) {
+      let res = text.includes(search)
+
+      if (res) {
         return true;
       } else {
         return false;
@@ -201,7 +202,7 @@ class Page extends React.Component {
       <div>
         <View
           account_id={account_id}
-          viewDetail = {viewDetail}
+          viewDetail={viewDetail}
           viewDetailOpen={this.viewDetailOpen}
           loading={loading}
         >

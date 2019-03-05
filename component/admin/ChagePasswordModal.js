@@ -1,11 +1,17 @@
 import React from "react";
-import { Modal, ButtonToolbar, Button, Form, Row, Col } from "react-bootstrap";
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 
 class MyVerticallyCenteredModal extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { validated: false, password: "", repassword: "" };
+    this.state = {
+      validated: false,
+      password: "",
+      repassword: ""
+    };
+
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleSubmit(event) {
@@ -22,6 +28,7 @@ class MyVerticallyCenteredModal extends React.Component {
       validated: true
     });
   }
+
   render() {
     const { validated } = this.state;
     return (
@@ -105,36 +112,4 @@ class MyVerticallyCenteredModal extends React.Component {
   }
 }
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { modalShow: false };
-  }
-
-  render() {
-    let modalClose = () => this.setState({ modalShow: false });
-
-    return (
-      <ButtonToolbar>
-        <Button
-          disabled={this.props.row.is_removed}
-          style={{ fontSize: "12px", fontWeight: "300", padding: "1px 5px" }}
-          variant="info"
-          size="sm"
-          onClick={() => this.setState({ modalShow: true })}
-        >
-          Change Password
-        </Button>
-
-        <MyVerticallyCenteredModal
-          show={this.state.modalShow}
-          onHide={modalClose}
-          row={this.props.row}
-        />
-      </ButtonToolbar>
-    );
-  }
-}
-
-export default App;
+export default MyVerticallyCenteredModal
