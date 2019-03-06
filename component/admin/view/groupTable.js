@@ -8,7 +8,7 @@ import DropGroup from "../DropGroup";
 export default props => {
   const {
     groups,
-    _changeRole,
+    changeRole,
     searchInput,
     accounts,
     roles,
@@ -70,7 +70,7 @@ export default props => {
           <Card.Body>
             <Card.Text>
               <AdminTable
-                _changeRole={_changeRole}
+                changeRole={changeRole}
                 searchInput={searchInput}
                 accounts={accounts}
                 roles={roles}

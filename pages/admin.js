@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import axios from "axios";
 import { filter, pick, toUpper, find } from "lodash";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -10,6 +10,17 @@ import GroupTable from "../component/admin/view/groupTable";
 import View from "../component/admin/view/admin";
 
 const API_ADMIN_ACCOUNT = "/api/admin/accounts"
+
+const getUser = ({ account_id }) => axios.get(
+  `${API_ADMIN_ACCOUNT}/${account_id}/users`
+)
+const getGroup = ({ account_id }) => axios.get(
+  `${API_ADMIN_ACCOUNT}/${account_id}/groups`
+)
+
+const getRole = ({ account_id }) => axios.get(
+  `${API_ADMIN_ACCOUNT}/${account_id}/roles`
+);
 
 class Page extends React.Component {
   constructor(props) {
@@ -25,8 +36,8 @@ class Page extends React.Component {
       viewDetail: true, //เปลี่ยนหน้า
     };
 
-    this._changeRole = this._changeRole.bind(this);
-    this._changeGroup = this._changeGroup.bind(this);
+    this.changeRole = this.changeRole.bind(this);
+    this.changeGroup = this.changeGroup.bind(this);
   }
 
   componentDidMount() {
@@ -38,9 +49,7 @@ class Page extends React.Component {
 
   getUser = async (account_id) => {
     try {
-      const resp = await axios.get(
-        `${API_ADMIN_ACCOUNT}/${account_id}/users`
-      );
+      const resp = await getUser({ account_id });
       this.setState({
         accounts: resp.data,
         accounts_const: resp.data
@@ -53,9 +62,7 @@ class Page extends React.Component {
 
   getGroup = async account_id => {
     try {
-      const resp = await axios.get(
-        `${API_ADMIN_ACCOUNT}/${account_id}/groups`
-      );
+      const resp = await getGroup({ account_id });
       this.setState({
         groups: resp.data,
         loading: false,
@@ -69,9 +76,7 @@ class Page extends React.Component {
 
   getRole = async account_id => {
     try {
-      const resp = await axios.get(
-        `${API_ADMIN_ACCOUNT}/${account_id}/roles`
-      );
+      const resp = await getRole({ account_id })
       this.setState({ roles: resp.data });
     } catch (error) {
       console.log(error);
@@ -79,7 +84,7 @@ class Page extends React.Component {
     }
   };
 
-  _changeRole = async (user_id, e) => {
+  changeRole = async (user_id, e) => {
     const { account_id } = this.state;
     let role_new_id = e.target.value;
     try {
@@ -97,7 +102,7 @@ class Page extends React.Component {
     }
   }
 
-  _changeGroup = async (user, group_id) => {
+  changeGroup = async (user, group_id) => {
     const { account_id } = this.state;
     try {
       const resp = await axios.get(
@@ -146,7 +151,6 @@ class Page extends React.Component {
     this.setState({ groupSelect: groupSelect });
   };
 
-
   viewDetailOpen = () => {
     const { viewDetail } = this.state;
     this.resetSearch();
@@ -177,7 +181,7 @@ class Page extends React.Component {
     if (viewDetail) {
       viewDetailRender = (
         <AdminTable
-          _changeRole={this._changeRole}
+          changeRole={this.changeRole}
           searchInput={this.searchInput}
           accounts={accounts}
           roles={roles}
@@ -187,13 +191,13 @@ class Page extends React.Component {
       viewDetailRender = (
         <GroupTable
           groups={groups}
-          _changeRole={this._changeRole}
+          changeRole={this.changeRole}
           searchInput={this.searchInput}
           accounts={accounts}
           roles={roles}
           groupSelect={groupSelect}
           selectGroup={this.selectGroup}
-          handleDrop={this._changeGroup}
+          handleDrop={this.changeGroup}
         />
       );
     }

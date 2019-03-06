@@ -10,7 +10,7 @@ import DragGroup from "./DragGroup";
 
 export default props => {
   const {
-    _changeRole,
+    changeRole,
     searchInput,
     accounts,
     roles,
@@ -111,7 +111,7 @@ export default props => {
   }
   function iconID(cell, row) {
     let output;
-    if (props.is_groupview) {
+    if (props.is_groupview && !row.is_removed) {
       output = <DragGroup txt={<IdOption row={row} />} id={cell} key={cell} />;
     } else {
       output = <IdOption row={row} />;
@@ -149,7 +149,7 @@ export default props => {
         defaultValue={row.role_id}
         as="select"
         onChange={e => {
-          _changeRole(row._id, e);
+          changeRole(row._id, e);
         }}
       >
         {option}

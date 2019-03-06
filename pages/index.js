@@ -14,7 +14,6 @@ class Page extends React.Component {
 
 
   render() {
-    console.log(process.env.SOCKET_CLIENT);
     
     return (
       <div>

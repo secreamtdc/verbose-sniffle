@@ -75,7 +75,7 @@ class MyApp extends App {
                  transitionIn='fadeIn'
                  transitionOut='fadeOut'
                  progressBar
-                 y/>
+                 />
           </div>
         </Provider>
       </Container>
