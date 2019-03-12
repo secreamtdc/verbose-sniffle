@@ -25,7 +25,8 @@ margin-right:15px;
     <Nav className="mr-auto">
       <Link className="navA" href="/"><a>Home</a></Link> 
       <Link className="navA" href="/chat"><a>Chat</a></Link> 
-      <Link className="navA" href="/admin"><a>Admin</a></Link> 
+      <Link className="navA" href="/admin"><a>Admin</a></Link>
+      <Link className="navA" href="/hook"><a>Hook</a></Link>  
     </Nav>
   </Navbar.Collapse>
 </Navbar>

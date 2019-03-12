@@ -144,7 +144,7 @@ class Page extends React.Component {
     const { accounts_const } = this.state;
     let accounts = accounts_const;
     this.setState({ accounts: accounts });
-  }
+  };
   selectGroup = group_id => {
     const { groups } = this.state;
     let groupSelect = find(groups, ["_id", group_id]);
