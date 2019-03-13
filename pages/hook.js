@@ -10,9 +10,10 @@ import GroupTable from "../component/hook/view/groupTable";
 import View from "../component/hook/view/admin";
 const API_ADMIN_ACCOUNT = "/api/admin/accounts";
 
-const callAPI = ({ account_id, conllection }) =>
-  axios.get(`${API_ADMIN_ACCOUNT}/${account_id}/${conllection}`);
-const UpdateAPI = ({ action, user_id, action_id }) =>
+const callAPI = ({ account_id, collection }) =>
+  axios.get(`${API_ADMIN_ACCOUNT}/${account_id}/${collection}`);
+
+const updateAPI = ({ action, user_id, action_id }) =>
   axios.get(`${API_ADMIN_ACCOUNT}/${action}/${user_id}/${action_id}`);
 
 const Page = props => {
@@ -26,29 +27,64 @@ const Page = props => {
   const [loading, setLoading] = useState(true);
   let timeout;
 
-  useEffect(() => {
-    createCallAPI(account_id, "roles", data => {
-      setRoles(data);
+  const createCallAPI = async (account_id, collection, callback) => {
+    setLoading(true)
+    try {
+      const resp = await callAPI({ account_id, collection });
+      callback(resp.data);
+    } catch (error) {
+      console.log(error);
+      toastr.error("ERROR", "Something went wrong.");
+    } finally {
+      setLoading(false)
+    }
+  }
 
-      createCallAPI(account_id, "users", data => {
-        setAccounts(data);
-        setAccounts_const(data);
-        setLoading(false);
-      }); //getUser API
-    }); //getRole API
+  const createUpdateAPI = async (action, user_id, action_id, callback) => {
+    setLoading(true)
+    try {
+      const resp = await updateAPI({ action, user_id, action_id });
+
+      callback(resp.data);
+    } catch (error) {
+      console.log(error);
+      toastr.error("ERROR", "Something went wrong.");
+    } finally {
+      setLoading(false)
+    }
+  };
+
+  const fetchData = async () => {
+    if (!roles.length) {
+      await createCallAPI(account_id, "roles", data => {
+        setRoles(data);
+      }); //getRole API
+    }
+
+    await createCallAPI(account_id, "users", data => {
+      setAccounts(data);
+      setAccounts_const(data);
+      setLoading(false);
+      console.log('test ###2')
+    }); //getUser API
+  }
+
+  useEffect(() => {
     createCallAPI(account_id, "groups", data => {
       setGroups(data);
       setGroupSelect(data[0]);
     }); //getGroup API
+  }, [])
 
-    console.log("useEffect");
-  }, [viewDetail]);
+  useEffect(() => {
+    fetchData()
+  }, [viewDetail])
 
   const changeGroup = async (user, group_id) => {
     setLoading(true);
 
-    CreateUpdateAPI("changegroup", user.id, group_id, data => {
-      if (data.ok == 1) {
+    createUpdateAPI("changegroup", user.id, group_id, data => {
+      if (data.ok === 1) {
         //Call new users
         createCallAPI(account_id, "users", data => {
           setAccounts(data);
@@ -60,11 +96,12 @@ const Page = props => {
       }
     });
   };
+
   const changeRole = async (user_id, e) => {
     let role_new_id = e.target.value;
     setLoading(true);
-    CreateUpdateAPI("changerole", user_id, role_new_id, data => {
-      if (data.ok == 1) {
+    createUpdateAPI("changerole", user_id, role_new_id, data => {
+      if (data.ok === 1) {
         //Call new users
         createCallAPI(account_id, "users", data => {
           setAccounts(data);
@@ -79,7 +116,7 @@ const Page = props => {
 
   const searchInput = e => {
     let accounts = accounts_const;
-    let searchAccounts = filter(accounts, function(o) {
+    let searchAccounts = filter(accounts, function (o) {
       o.group_name = o.group_docs[0].name;
       o.role_name = o.role_docs[0].name;
 
@@ -107,11 +144,11 @@ const Page = props => {
         search != undefined &&
         search != "" &&
         search != " "
-      ){
+      ) {
         createCallAPI(account_id, "search/" + search, data => {
           setAccounts(data);
         }); //getUserSearch API
-      }else {
+      } else {
         setAccounts(accounts_const);
       }
     };
@@ -119,7 +156,7 @@ const Page = props => {
       clearTimeout(timeout);
       timeout = null;
     }
-    timeout = setTimeout(function() {
+    timeout = setTimeout(function () {
       searchData(search);
     }, 500);
   };
@@ -179,29 +216,6 @@ const Page = props => {
       </View>
     </div>
   );
-};
-
-const createCallAPI = async (account_id, conllection, callback) => {
-  try {
-    const resp = await callAPI({ account_id, conllection });
-    console.log();
-
-    callback(resp.data);
-  } catch (error) {
-    console.log(error);
-    toastr.error("ERROR", "Something went wrong.");
-  }
-};
-const CreateUpdateAPI = async (action, user_id, action_id, callback) => {
-  try {
-    console.log(action, user_id, action_id);
-    const resp = await UpdateAPI({ action, user_id, action_id });
-
-    callback(resp.data);
-  } catch (error) {
-    console.log(error);
-    toastr.error("ERROR", "Something went wrong.");
-  }
 };
 
 export default DragDropContext(HTML5Backend)(Page);

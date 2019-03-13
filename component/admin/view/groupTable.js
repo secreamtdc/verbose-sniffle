@@ -28,8 +28,7 @@ export default props => {
         <ListGroup defaultActiveKey={"#" + groups[0]._id}>
           {groups.map((element, i) => {
 
-            let countUsers = _.filter(accounts, ["group_id", element._id])
-              .length;
+            let countUsers = _.filter(accounts, ["group_id", element._id]).length;
             let eleGroup = (
               <div>
                 {element.name}{" "}
