@@ -1,10 +1,10 @@
 
-import React from "react";
+import React, { useContext } from "react";
 import { Row, Col, ListGroup, Card, Badge } from "react-bootstrap";
-import {filter} from "lodash"
+import { filter } from "lodash"
 import AdminTable from "../table";
 import DropGroup from "../DropGroup";
-
+import { ThemeContext } from 'component/context'
 
 export default props => {
   const {
@@ -18,17 +18,17 @@ export default props => {
     handleDrop
   } = props;
 
-
+  const theme = useContext(ThemeContext)
+  console.log('theme', theme)
 
   const group_select = groupSelect != null ? groupSelect : groups[0];
-
 
   const countUsersGroupSelect = filter(accounts, ["group_id",
     group_select._id
   ]).length;
 
-  console.log("groupSelect : ",countUsersGroupSelect);
-  
+  console.log("groupSelect : ", countUsersGroupSelect);
+
   return (
     <Row>
       <Col md="3">

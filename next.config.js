@@ -17,6 +17,8 @@ module.exports = withCSS({
       })
     ]
 
+    config.resolve.alias['component'] = path.join(__dirname, 'component')
+
     return config
   }
 })

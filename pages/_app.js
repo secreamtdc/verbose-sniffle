@@ -9,14 +9,14 @@ import "../style/admin.css"
 import "../style/arun-style.css"
 import "../style/style-responsive.css"
 
-
+import { ThemeContext } from '../component/context'
 import 'react-redux-toastr/lib/css/react-redux-toastr.min.css'
 
-import {Provider}  from 'react-redux'
+import { Provider } from 'react-redux'
 import ReduxToastr from 'react-redux-toastr'
- 
-import {createStore, combineReducers} from 'redux'
-import {reducer as toastrReducer} from 'react-redux-toastr'
+
+import { createStore, combineReducers } from 'redux'
+import { reducer as toastrReducer } from 'react-redux-toastr'
 const reducers = {
   // ... other reducers ...
   toastr: toastrReducer // <- Mounted at toastr.
@@ -63,23 +63,25 @@ class MyApp extends App {
           />
 
         </Head>
-        
+
         <Provider store={store}>
-          <div>
-          <Component {...pageProps} />
-            <ReduxToastr
-                 timeOut={4000}
-                 newestOnTop={false}
-                 preventDuplicates
-                 position='bottom-right'
-                 transitionIn='fadeIn'
-                 transitionOut='fadeOut'
-                 progressBar
-                 />
-          </div>
+          <ThemeContext.Provider value="123456">
+            <div>
+              <Component {...pageProps} />
+              <ReduxToastr
+                timeOut={4000}
+                newestOnTop={false}
+                preventDuplicates
+                position='bottom-right'
+                transitionIn='fadeIn'
+                transitionOut='fadeOut'
+                progressBar
+              />
+            </div>
+          </ThemeContext.Provider>
         </Provider>
       </Container>
-      
+
     )
   }
 }
