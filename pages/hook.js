@@ -3,14 +3,14 @@ import axios from "axios";
 import { filter, pick, toUpper, find } from "lodash";
 import HTML5Backend from "react-dnd-html5-backend";
 import { DragDropContext } from "react-dnd";
-import { toastr } from 'react-redux-toastr'
+import { toastr } from "react-redux-toastr";
 
 import AdminTable from "../component/hook/table";
 import GroupTable from "../component/hook/view/groupTable";
 import View from "../component/hook/view/admin";
 const API_ADMIN_ACCOUNT = "/api/admin/accounts";
 
-const CallAPI = ({ account_id, conllection }) =>
+const callAPI = ({ account_id, conllection }) =>
   axios.get(`${API_ADMIN_ACCOUNT}/${account_id}/${conllection}`);
 const UpdateAPI = ({ action, user_id, action_id }) =>
   axios.get(`${API_ADMIN_ACCOUNT}/${action}/${user_id}/${action_id}`);
@@ -24,58 +24,55 @@ const Page = props => {
   const [groupSelect, setGroupSelect] = useState({});
   const [viewDetail, setViewDetail] = useState(true);
   const [loading, setLoading] = useState(true);
+  let timeout;
 
   useEffect(() => {
-
-    CreateCallAPI(account_id, "roles", data =>{
+    createCallAPI(account_id, "roles", data => {
       setRoles(data);
 
-      CreateCallAPI(account_id, "users", data => { 
-        setAccounts(data)
-        setAccounts_const(data)
+      createCallAPI(account_id, "users", data => {
+        setAccounts(data);
+        setAccounts_const(data);
         setLoading(false);
       }); //getUser API
-
     }); //getRole API
-    CreateCallAPI(account_id, "groups", data => {
+    createCallAPI(account_id, "groups", data => {
       setGroups(data);
-      setGroupSelect(data[0])
+      setGroupSelect(data[0]);
     }); //getGroup API
-
-
 
     console.log("useEffect");
   }, [viewDetail]);
 
   const changeGroup = async (user, group_id) => {
-    setLoading(true)
+    setLoading(true);
 
     CreateUpdateAPI("changegroup", user.id, group_id, data => {
       if (data.ok == 1) {
         //Call new users
-        CreateCallAPI(account_id, "users", data => { 
-          setAccounts(data)
-          setAccounts_const(data)
+        createCallAPI(account_id, "users", data => {
+          setAccounts(data);
+          setAccounts_const(data);
 
           setLoading(false);
           toastr.success("Success", "Update user role!");
-        }); 
+        });
       }
     });
   };
   const changeRole = async (user_id, e) => {
     let role_new_id = e.target.value;
-    setLoading(true)
+    setLoading(true);
     CreateUpdateAPI("changerole", user_id, role_new_id, data => {
       if (data.ok == 1) {
         //Call new users
-        CreateCallAPI(account_id, "users", data => { 
-          setAccounts(data)
-          setAccounts_const(data)
+        createCallAPI(account_id, "users", data => {
+          setAccounts(data);
+          setAccounts_const(data);
 
           setLoading(false);
           toastr.success("Success", "Update user role!");
-        }); 
+        });
       }
     });
   };
@@ -100,18 +97,33 @@ const Page = props => {
     });
     setAccounts(searchAccounts);
   };
-  const searchInput2 = e => {
 
+  const searchInput_backend = e => {
     let search = toUpper(e.target.value);
-    if(search != null && search != undefined && search != ""){
-      CreateCallAPI(account_id, "search/"+search, data => {
-        setAccounts(data);
-      }); //getUserSearch API
-    }else{
-      setAccounts(accounts_const);
+    const searchData = search => {
+      if (
+        search.length > 0 &&
+        search != null &&
+        search != undefined &&
+        search != "" &&
+        search != " "
+      ){
+        createCallAPI(account_id, "search/" + search, data => {
+          setAccounts(data);
+        }); //getUserSearch API
+      }else {
+        setAccounts(accounts_const);
+      }
+    };
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
     }
+    timeout = setTimeout(function() {
+      searchData(search);
+    }, 500);
   };
-  
+
   const resetSearch = () => {
     let accounts = accounts_const;
     setAccounts(accounts);
@@ -135,7 +147,7 @@ const Page = props => {
     viewDetailRender = (
       <AdminTable
         changeRole={changeRole}
-        searchInput={searchInput2}
+        searchInput={searchInput_backend}
         accounts={accounts}
         roles={roles}
       />
@@ -169,9 +181,11 @@ const Page = props => {
   );
 };
 
-const CreateCallAPI = async (account_id, conllection, callback) => {
+const createCallAPI = async (account_id, conllection, callback) => {
   try {
-    const resp = await CallAPI({ account_id, conllection });
+    const resp = await callAPI({ account_id, conllection });
+    console.log();
+
     callback(resp.data);
   } catch (error) {
     console.log(error);
@@ -182,8 +196,7 @@ const CreateUpdateAPI = async (action, user_id, action_id, callback) => {
   try {
     console.log(action, user_id, action_id);
     const resp = await UpdateAPI({ action, user_id, action_id });
-  
-    
+
     callback(resp.data);
   } catch (error) {
     console.log(error);

@@ -19,7 +19,6 @@ function getUser(req, res) {
   // Use connect method to connect to the Server
   client.connect(function(err) {
     assert.equal(null, err);
-    // console.log("Connected successfully to server");
 
     const db = client.db(dbName);
 
@@ -64,7 +63,6 @@ function getRole(req, res) {
   // Use connect method to connect to the Server
   client.connect(function(err) {
     assert.equal(null, err);
-    // console.log("Connected successfully to server");
 
     const db = client.db(dbName);
 
@@ -89,7 +87,6 @@ function getGroup(req, res) {
   // Use connect method to connect to the Server
   client.connect(function(err) {
     assert.equal(null, err);
-    // console.log("Connected successfully to server");
 
     const db = client.db(dbName);
 
@@ -155,18 +152,16 @@ function getUserSearch(req, res) {
   // Use connect method to connect to the Server
   client.connect(function(err) {
     assert.equal(null, err);
-    // console.log("Connected successfully to server");
 
     const db = client.db(dbName);
-
     const findGroup = function(db, callback) {
       // Get the documents collection
       const collection = db.collection("group");
       // Find some documents
       collection
-        .aggregate([{ $match: { account_id: Number(req.params.account_id) , name: new RegExp(req.params.search,'i') } }])
-        .toArray( function(err, docs) {
-           assert.equal(err, null);
+        .find({ account_id: Number(req.params.account_id) })
+        .toArray(async function(err, docs) {
+          await assert.equal(err, null);
           callback(docs);
         });
     };
@@ -175,9 +170,9 @@ function getUserSearch(req, res) {
       const collection = db.collection("role");
       // Find some documents
       collection
-        .aggregate([{ $match: { account_id: req.params.account_id , name: new RegExp(req.params.search,'i') } }])
-        .toArray( function(err, docs) {
-           assert.equal(err, null);
+        .find({ account_id: String(req.params.account_id) })
+        .toArray(async function(err, docs) {
+          await assert.equal(err, null);
           callback(docs);
         });
     };
@@ -185,10 +180,8 @@ function getUserSearch(req, res) {
       // Get the documents collection
       const collection = db.collection("users");
       // Find some documents
-
       collection
         .aggregate([
-          
           {
             $lookup: {
               from: "group",
@@ -204,8 +197,18 @@ function getUserSearch(req, res) {
               foreignField: "_id",
               as: "role_docs"
             }
+          },
+          {
+            $match: {
+              account_id: Number(req.params.account_id),
+              $or: [
+                { name: new RegExp(req.params.search, "i") },
+                { email: new RegExp(req.params.search, "i") },
+                { "group_docs.name": new RegExp(req.params.search, "i") },
+                { "role_docs.name": new RegExp(req.params.search, "i") }
+              ]
+            }
           }
-          ,{ $match: { account_id: Number(req.params.account_id),  $or: [ { name: new RegExp(req.params.search,'i') }, { email: new RegExp(req.params.search,'i') }, {'group_docs.name' : new RegExp(req.params.search,'i')}, {'role_docs.name' : new RegExp(req.params.search,'i')}  ] } }
         ])
         .toArray(async function(err, docs) {
           await assert.equal(err, null);
@@ -216,7 +219,84 @@ function getUserSearch(req, res) {
     findUser(db, function(data) {
       res.json(data);
     });
+  });
+}
+function test(req, res) {
+  var obj = {};
+  // Use connect method to connect to the Server
+  client.connect(function(err) {
+    assert.equal(null, err);
 
+    const db = client.db(dbName);
+
+    const findrole = function(db, callback) {
+      // Get the documents collection
+      const collection = db.collection("role");
+      // Find some documents
+      collection
+        .find({
+          account_id: String(req.params.account_id),
+          $or: [{ name: new RegExp(req.params.search, "i") }]
+        })
+        .project({ name: 1 })
+        .toArray(async function(err, docs) {
+          await assert.equal(err, null);
+          callback(docs);
+        });
+    };
+    const findgroup = function(db, callback) {
+      // Get the documents collection
+      const collection = db.collection("group");
+      // Find some documents
+      collection
+        .find({
+          account_id: Number(req.params.account_id),
+          $or: [{ name: new RegExp(req.params.search, "i") }]
+        })
+        .project({ name: 1 })
+        .toArray(async function(err, docs) {
+          await assert.equal(err, null);
+          callback(docs);
+        });
+    };
+    const findUser = function(db, obj, callback) {
+      // Get the documents collection
+      const collection = db.collection("users");
+      // Find some documents
+
+      collection
+        .find({
+          account_id: Number(req.params.account_id),
+          $or: [
+            { name: new RegExp(req.params.search, "i") },
+            { email: new RegExp(req.params.search, "i") },
+            ...obj.role,
+            ...obj.group
+          ]
+        })
+        .toArray(async function(err, docs) {
+          await assert.equal(err, null);
+          callback(docs);
+        });
+    };
+    findrole(db, function(data) {
+      obj.role = [];
+      data.forEach(element => {
+        obj.role.push({ role_id: new ObjectId(element._id) });
+      });
+
+      // res.json(obj);
+      findgroup(db, function(data) {
+        obj.group = [];
+        data.forEach(element => {
+          obj.group.push({ group_id: new ObjectId(element._id) });
+        });
+
+        findUser(db, obj, function(data) {
+          res.json(data);
+        });
+      });
+    });
   });
 }
 
@@ -226,5 +306,6 @@ module.exports = {
   getGroup,
   changeRole,
   changeGroup,
-  getUserSearch
+  getUserSearch,
+  test
 };

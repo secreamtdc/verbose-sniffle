@@ -21,11 +21,11 @@ const router = express.Router()
   router.get('/api/admin/accounts/changegroup/:user_id/:group_id',(accounts.changeGroup));
 
   router.get('/api/admin/accounts/:account_id/search/:search',(accounts.getUserSearch));
-  
+  router.get('/api/test/:account_id/:search',(accounts.test));
+    
   router.get('/ping', (req, res) => {
     res.send('pong');
   })
-  
 
 
 module.exports = router
